@@ -1,17 +1,20 @@
 package com.example.trasex
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.gms.location.places.Places
-
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolygonClickListener, GoogleMap.OnPolylineClickListener {
+
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolygonClickListener,
+    GoogleMap.OnPolylineClickListener {
 
     private lateinit var mMap: GoogleMap
 
@@ -33,19 +36,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolygo
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+
+    private fun getLocationPermission(){
+        if(ContextCompat.checkSelfPermission(this.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+
+        }
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        googleMap.addPolyline(PolylineOptions()
-            .clickable(true)
-            .jointType(JointType.ROUND)
-            .color(Color.BLUE)
-            .add(
-                LatLng(-35.016, 143.321),
-                LatLng(-34.747, 145.592),
-                LatLng(-34.364, 147.891),
-                LatLng(-33.501, 150.217),
-                LatLng(-32.306, 149.248),
-                LatLng(-32.491, 147.309)))
+        googleMap.addPolyline(
+            PolylineOptions()
+                .clickable(true)
+                .jointType(JointType.ROUND)
+                .color(Color.BLUE)
+                .add(
+                    LatLng(-35.016, 143.321),
+                    LatLng(-34.747, 145.592),
+                    LatLng(-34.364, 147.891),
+                    LatLng(-33.501, 150.217),
+                    LatLng(-32.306, 149.248),
+                    LatLng(-32.491, 147.309)
+                )
+        )
 
         // Add a marker in Sydney and move the camera
         val sydney = LatLng(-34.0, 151.0)
