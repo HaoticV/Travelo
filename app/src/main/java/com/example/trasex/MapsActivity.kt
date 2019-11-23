@@ -38,12 +38,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLocationPermission()
+        enableLocalization()
     }
 
     private fun getLocationPermission() {
-        if(checkPermissions()){
+        if (checkPermissions()) {
             mLocationPermissionGranted = true
-        }else{
+        } else {
             requestPermissions()
         }
     }
@@ -68,7 +69,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 4.5f))
-        if(mLocationPermissionGranted){
+        if (mLocationPermissionGranted) {
             mMap.isMyLocationEnabled = true
             mMap.uiSettings.isMyLocationButtonEnabled = true
         }
@@ -113,5 +114,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+
+    private fun isLocationEnabled(): Boolean {
+        var locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
+    }
+
+    private fun enableLocalization() {
+        if (!isLocationEnabled()) {
+            Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(intent)
+        }
+    }
+
 
 }
