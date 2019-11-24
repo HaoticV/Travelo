@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "568251977919",
+    "firebase_url": "https://praca-inzynierska-a3c28.firebaseio.com",
+    "project_id": "praca-inzynierska-a3c28",
+    "storage_bucket": "praca-inzynierska-a3c28.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568251977919:android:079603c47e8bcab98cb60a",
+        "android_client_info": {
+          "package_name": "com.example.trasex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "568251977919-gqp915f8puhifd7fpefi6eksc4k9s3du.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ0d-9OyzH1q_MriHpezadiRZGEkacrMU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "568251977919-gqp915f8puhifd7fpefi6eksc4k9s3du.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
