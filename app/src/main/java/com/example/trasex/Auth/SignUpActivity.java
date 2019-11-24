@@ -1,12 +1,9 @@
-package com.example.trasex.Authorization;
+package com.example.trasex.Auth;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -22,9 +19,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SignUpActivity extends AppCompatActivity {
     static final int REGISTER_REQUEST = 1;

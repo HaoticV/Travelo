@@ -35,7 +35,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".Authorization.SignInActivity"
+            android:name=".Auth.SignInActivity"
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,7 +44,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MapsActivity" />
-        <activity android:name=".Authorization.SignUpActivity"></activity>
+        <activity android:name=".Auth.SignUpActivity"></activity>
     </application>
 
 </manifest>

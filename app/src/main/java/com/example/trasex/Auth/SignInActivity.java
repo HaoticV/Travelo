@@ -1,4 +1,4 @@
-package com.example.trasex.Authorization;
+package com.example.trasex.Auth;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
