@@ -7,11 +7,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.trasex.BaseActivity;
 import com.example.trasex.MapsActivity;
 import com.example.trasex.R;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,13 +21,13 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class SignInActivity extends AppCompatActivity {
+public class SignInActivity extends BaseActivity {
     private FirebaseAuth mAuth;
 
     private EditText mEmail;
     private EditText mPassword;
     private Button mSignInButton;
-    private Button mSignUpButton;
+    private TextView mSignUpButton;
 
     private ProgressBar mProgressBar;
 
@@ -91,6 +92,12 @@ public class SignInActivity extends AppCompatActivity {
             mSignInButton.setEnabled(true);
             mSignUpButton.setEnabled(true);
         }
+    }
+
+    @Override
+    public void onLogInSuccess() {
+        super.onLogInSuccess();
+        startActivity(new Intent(this, MapsActivity.class));
     }
 
     private boolean isEmpty() {
