@@ -1,94 +1,58 @@
 package com.example.trasex
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.os.Looper
 import android.provider.Settings
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
+import androidx.core.content.ContextCompat
+import com.example.trasex.Auth.SignInActivity
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
-import com.google.firebase.FirebaseApp
+import com.google.android.gms.maps.model.PointOfInterest
 
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickListener {
 
     private val PERMISSION_ID: Int = 42
     private lateinit var mMap: GoogleMap
-    lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private lateinit var mapView: MapView
+    private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var mLocationPermissionGranted: Boolean = false
+    private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_maps)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        getLocationPermission()
-        enableLocalization()
-    }
-
-    private fun getLocationPermission() {
-        if (checkPermissions()) {
-            mLocationPermissionGranted = true
-        } else {
-            requestPermissions()
+        setContentView(R.layout.activity_map)
+        var mapViewBundle: Bundle? = null
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY)
         }
+        mapView = findViewById(R.id.mapView)
+        mapView.onCreate(mapViewBundle)
+        mapView.getMapAsync(this)
+
+        if (QApp.fUser == null) {
+            startActivity(Intent(this, SignInActivity::class.java))
+        }
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        enableLocalization()
+        updateUILayer()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        googleMap.addPolyline(
-            PolylineOptions()
-                .clickable(true)
-                .jointType(JointType.ROUND)
-                .color(Color.BLUE)
-                .add(
-                    LatLng(-35.016, 143.321),
-                    LatLng(-34.747, 145.592),
-                    LatLng(-34.364, 147.891),
-                    LatLng(-33.501, 150.217),
-                    LatLng(-32.306, 149.248),
-                    LatLng(-32.491, 147.309)
-                )
-        )
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 4.5f))
-        if (mLocationPermissionGranted) {
-            mMap.isMyLocationEnabled = true
-            mMap.uiSettings.isMyLocationButtonEnabled = true
-        }
-    }
+        mMap.setOnPoiClickListener(this)
 
-    private fun checkPermissions(): Boolean {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            return true
-        }
-        return false
+        if (mLocationPermissionGranted)
+            mMap.isMyLocationEnabled = true
     }
 
     private fun requestPermissions() {
@@ -111,13 +75,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 mLocationPermissionGranted = true
                 mMap.isMyLocationEnabled = true
-                mMap.uiSettings.isMyLocationButtonEnabled = true
+                updateUILayer()
             }
         }
     }
 
+    private fun updateUILayer() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            mLocationPermissionGranted = true
+        } else {
+            requestPermissions()
+        }
+    }
+
     private fun isLocationEnabled(): Boolean {
-        var locationManager: LocationManager =
+        val locationManager: LocationManager =
             getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
@@ -132,5 +106,53 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    override fun onPoiClick(poi: PointOfInterest) {
+        Toast.makeText(
+            applicationContext, "Clicked: " +
+                    poi.name + "\nPlace ID:" + poi.placeId +
+                    "\nLatitude:" + poi.latLng.latitude +
+                    " Longitude:" + poi.latLng.longitude,
+            Toast.LENGTH_SHORT
+        ).show()
+    }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        var mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY)
+        if (mapViewBundle == null) {
+            mapViewBundle = Bundle()
+            outState.putBundle(MAP_VIEW_BUNDLE_KEY, mapViewBundle)
+        }
+        mapView.onSaveInstanceState(mapViewBundle)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapView.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView.onStop()
+    }
+
+    override fun onPause() {
+        mapView.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mapView.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
+    }
 }

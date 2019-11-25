@@ -18,6 +18,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name="com.example.trasex.QApp"
         android:theme="@style/AppTheme">
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -35,7 +36,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".Auth.SignInActivity"
+            android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,7 +44,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MapsActivity" />
+        <activity android:name=".Auth.SignInActivity" />
         <activity android:name=".Auth.SignUpActivity"></activity>
     </application>
 
