@@ -31,6 +31,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
+        if (QApp.fUser == null) {
+            startActivity(Intent(this, SignInActivity::class.java))
+        }
         var mapViewBundle: Bundle? = null
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY)
@@ -39,9 +42,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         mapView.onCreate(mapViewBundle)
         mapView.getMapAsync(this)
 
-        if (QApp.fUser == null) {
-            startActivity(Intent(this, SignInActivity::class.java))
-        }
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         enableLocalization()
         updateUILayer()

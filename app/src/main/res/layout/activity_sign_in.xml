@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:text="Welcome to Trasex"
+            android:text="Witaj w aplikacji Trasex"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:textColor="@color/green_300"
             android:textStyle="bold" />
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:text="Sign in to continue"
+            android:text="Zaloguj się"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
             android:textColor="@color/blue_grey_300" />
 
@@ -62,7 +62,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="USERNAME"
+            android:text="Nazwa użytkownika"
             android:textAlignment="center"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
             android:textColor="@color/blue_grey_200" />
@@ -87,7 +87,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PASSWORD"
+            android:text="Hasło"
             android:textAlignment="center"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
             android:textColor="@color/blue_grey_200" />
@@ -117,7 +117,7 @@
             android:layout_marginLeft="-4dp"
             android:layout_marginRight="-4dp"
             android:background="@drawable/btn_rounded_green_400"
-            android:text="S I G N  I N"
+            android:text="LOGOWANIE"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
@@ -138,7 +138,7 @@
                 android:id="@+id/signUpButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SIGN UP FOR AN ACCOUNT?"
+                android:text="Nie masz konta?"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                 android:textColor="@color/blue_grey_400" />
 

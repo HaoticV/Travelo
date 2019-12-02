@@ -39,7 +39,7 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_signup);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
@@ -54,7 +54,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         mProgressBar = findViewById(R.id.progressBar2);
 
-        mRegisterButton = findViewById(R.id.RegisterButton);
+        mRegisterButton = findViewById(R.id.SignUpButton);
 
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
