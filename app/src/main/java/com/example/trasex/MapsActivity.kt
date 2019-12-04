@@ -11,15 +11,21 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.trasex.Auth.SignInActivity
+import com.example.trasex.Directionhelpers.FetchURL
+import com.example.trasex.Directionhelpers.TaskLoadedCallback
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
+import kotlinx.android.synthetic.main.activity_map.*
 
 
-class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickListener {
+class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickListener, TaskLoadedCallback {
 
     private val PERMISSION_ID: Int = 42
     private lateinit var mMap: GoogleMap
@@ -27,6 +33,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var mLocationPermissionGranted: Boolean = false
     private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
+    private lateinit var currentPolyline: Polyline
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +52,17 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         enableLocalization()
         updateUILayer()
+
+        buttonDirections.setOnClickListener {
+            FetchURL(this).execute(
+                getUrl(
+                    LatLng(51.2368439, 22.5484569),
+                    LatLng(51.2380664, 22.5302608),
+                    mutableListOf(LatLng(51.2346674, 22.5423844)),
+                    "cycling"
+                )
+            )
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -126,6 +144,28 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         mapView.onSaveInstanceState(mapViewBundle)
     }
 
+    private fun getUrl(origin: LatLng, dest: LatLng, waypoints: MutableList<LatLng>, directionMode: String): String? { // Origin of route
+        val str_origin = "origin=" + origin.latitude + "," + origin.longitude
+        // Destination of route
+        val str_dest = "destination=" + dest.latitude + "," + dest.longitude
+        // Mode
+        val mode = "mode=$directionMode"
+        // Building the parameters to the web service
+        var str_waypoints = "waypoints="
+        for (point in waypoints) {
+            str_waypoints = "via:" + point.longitude + "," + point.longitude
+        }
+        val parameters = "$str_origin&$str_dest&$str_waypoints&$mode"
+        // Output format
+        val output = "json"
+        // Building the url to the web service
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key)
+    }
+
+    override fun onTaskDone(vararg values: Any?) {
+        currentPolyline = mMap.addPolyline(values[0] as PolylineOptions?)
+    }
+
     override fun onResume() {
         super.onResume()
         mapView.onResume()
@@ -155,4 +195,5 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         super.onLowMemory()
         mapView.onLowMemory()
     }
+
 }
