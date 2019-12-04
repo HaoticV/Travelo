@@ -56,10 +56,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         buttonDirections.setOnClickListener {
             FetchURL(this).execute(
                 getUrl(
-                    LatLng(51.2368439, 22.5484569),
-                    LatLng(51.2380664, 22.5302608),
-                    mutableListOf(LatLng(51.2346674, 22.5423844)),
-                    "cycling"
+                    LatLng(51.2368267, 22.5484466),
+                    mutableListOf(LatLng(51.2428279, 22.5070433), LatLng(51.2537949, 22.5551558)),
+                    LatLng(51.2368791, 22.5484349),
+                    "bicycling"
                 )
             )
         }
@@ -144,22 +144,23 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         mapView.onSaveInstanceState(mapViewBundle)
     }
 
-    private fun getUrl(origin: LatLng, dest: LatLng, waypoints: MutableList<LatLng>, directionMode: String): String? { // Origin of route
+    private fun getUrl(origin: LatLng, waypoints: MutableList<LatLng>, dest: LatLng, directionMode: String): String? { // Origin of route
         val str_origin = "origin=" + origin.latitude + "," + origin.longitude
         // Destination of route
         val str_dest = "destination=" + dest.latitude + "," + dest.longitude
         // Mode
         val mode = "mode=$directionMode"
         // Building the parameters to the web service
-        var str_waypoints = "waypoints="
+        var str_waypoints = "waypoints=via:"
         for (point in waypoints) {
-            str_waypoints = "via:" + point.longitude + "," + point.longitude
+            str_waypoints += point.latitude.toString() + "," + point.longitude.toString() + "|"
         }
-        val parameters = "$str_origin&$str_dest&$str_waypoints&$mode"
+        val parameters = "$str_origin&$str_waypoints&$str_dest&$mode"
         // Output format
         val output = "json"
         // Building the url to the web service
-        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key)
+        val final = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key)
+        return final
     }
 
     override fun onTaskDone(vararg values: Any?) {
