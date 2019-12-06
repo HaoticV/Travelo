@@ -7,7 +7,9 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Menu
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.trasex.Auth.SignInActivity
@@ -22,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.libraries.places.api.Places
 import kotlinx.android.synthetic.main.activity_map.*
 
 
@@ -52,16 +55,28 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         enableLocalization()
         updateUILayer()
+        initToolbar()
+        Places.initialize(this, getString(R.string.google_maps_key))
 
+        val trasa = Route(
+            LatLng(51.2368267, 22.5484466),
+            listOf(LatLng(51.2428279, 22.5070433), LatLng(51.2537949, 22.5551558)),
+            LatLng(51.2368791, 22.5484349)
+        )
+        val trasa2 = Route(
+            LatLng(51.234747, 22.4891012),
+            listOf(LatLng(51.2587238, 22.531618), LatLng(51.2581866, 22.5874938), LatLng(51.2307844, 22.6113547)),
+            LatLng(51.2346539, 22.4888743)
+        )
         buttonDirections.setOnClickListener {
             FetchURL(this).execute(
-                getUrl(
-                    LatLng(51.2368267, 22.5484466),
-                    mutableListOf(LatLng(51.2428279, 22.5070433), LatLng(51.2537949, 22.5551558)),
-                    LatLng(51.2368791, 22.5484349),
-                    "bicycling"
-                )
+                getUrl(trasa)
             )
+            FetchURL(this).execute(getUrl(trasa2))
+        }
+
+        logout.setOnClickListener {
+            QApp.fUser = null
         }
     }
 
@@ -69,8 +84,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         mMap = googleMap
         mMap.setOnPoiClickListener(this)
 
-        if (mLocationPermissionGranted)
+        if (mLocationPermissionGranted) {
             mMap.isMyLocationEnabled = true
+            mMap.uiSettings.isZoomControlsEnabled = true
+        }
+
     }
 
     private fun requestPermissions() {
@@ -144,27 +162,39 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         mapView.onSaveInstanceState(mapViewBundle)
     }
 
-    private fun getUrl(origin: LatLng, waypoints: MutableList<LatLng>, dest: LatLng, directionMode: String): String? { // Origin of route
-        val str_origin = "origin=" + origin.latitude + "," + origin.longitude
+    private fun getUrl(trasa: Route): String? { // Origin of route
+        val strOrigin = "origin=" + trasa.origin.latitude + "," + trasa.origin.longitude
         // Destination of route
-        val str_dest = "destination=" + dest.latitude + "," + dest.longitude
+        val strDest = "destination=" + trasa.destination.latitude + "," + trasa.destination.longitude
         // Mode
-        val mode = "mode=$directionMode"
+        val mode = "mode=${trasa.mode}"
         // Building the parameters to the web service
-        var str_waypoints = "waypoints=via:"
-        for (point in waypoints) {
-            str_waypoints += point.latitude.toString() + "," + point.longitude.toString() + "|"
+        var strWaypoints = "waypoints=via:"
+        for (point in trasa.waypoints) {
+            strWaypoints += point.latitude.toString() + "," + point.longitude.toString() + "|"
         }
-        val parameters = "$str_origin&$str_waypoints&$str_dest&$mode"
+        val parameters = "$strOrigin&$strWaypoints&$strDest&$mode"
         // Output format
         val output = "json"
         // Building the url to the web service
-        val final = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key)
-        return final
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key)
+    }
+
+    private fun initToolbar() {
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        toolbar.setNavigationIcon(R.drawable.ic_menu)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = getString(R.string.app_name)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onTaskDone(vararg values: Any?) {
         currentPolyline = mMap.addPolyline(values[0] as PolylineOptions?)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_basic, menu)
+        return true
     }
 
     override fun onResume() {

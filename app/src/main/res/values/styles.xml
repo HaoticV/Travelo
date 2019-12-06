@@ -1,11 +1,23 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="AppTheme" parent="BaseTheme">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Theme.AppCompat.Toolbar" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="android:textColorSecondary">@color/quantum_white_100</item>
+        <item name="android:textColorPrimary">@color/quantum_white_100</item>
+        <item name="actionMenuTextColor">@color/quantum_white_100</item>
     </style>
 
     <style name="EditText.Green" parent="@style/AppTheme">
