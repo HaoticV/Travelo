@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -21,10 +22,10 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PointOfInterest
-import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_map.*
 
 
@@ -62,14 +63,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
             listOf(LatLng(51.2428279, 22.5070433), LatLng(51.2537949, 22.5551558)),
             LatLng(51.2368791, 22.5484349)
         )
-        val trasa2 = Route(
-            LatLng(51.234747, 22.4891012),
-            listOf(LatLng(51.2587238, 22.531618), LatLng(51.2581866, 22.5874938), LatLng(51.2307844, 22.6113547)),
-            LatLng(51.2346539, 22.4888743)
-        )
         buttonDirections.setOnClickListener {
             FetchURL(this).execute(getUrl(trasa))
-            FetchURL(this).execute(getUrl(trasa2))
         }
     }
 
@@ -81,6 +76,30 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
             mMap.isMyLocationEnabled = true
             mMap.uiSettings.isZoomControlsEnabled = true
         }
+        val hashMap: HashMap<String, LatLng> = HashMap()
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (data: DataSnapshot in dataSnapshot.children.filter { it.key == "routes" }.flatMap { it.children }) {
+                    hashMap.put(
+                        data.key.toString(),
+                        LatLng(
+                            data.child("origin").child("latitude").value.toString().toDouble(),
+                            data.child("origin").child("longitude").value.toString().toDouble()
+                        )
+                    )
+                }
+                for (item in hashMap) {
+                    googleMap.addMarker(MarkerOptions().position(item.value))
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(this@MapsActivity.toString(), "loadPost:onCancelled", databaseError.toException())
+                // ...
+            }
+        }
+        QApp.fData.reference.addValueEventListener(postListener)
 
     }
 
