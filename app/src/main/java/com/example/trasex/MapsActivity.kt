@@ -24,7 +24,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.libraries.places.api.Places
 import kotlinx.android.synthetic.main.activity_map.*
 
 
@@ -56,7 +55,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         enableLocalization()
         updateUILayer()
         initToolbar()
-        Places.initialize(this, getString(R.string.google_maps_key))
 
         val trasa = Route(
             LatLng(51.2368267, 22.5484466),
@@ -69,9 +67,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
             LatLng(51.2346539, 22.4888743)
         )
         buttonDirections.setOnClickListener {
-            FetchURL(this).execute(
-                getUrl(trasa)
-            )
+            FetchURL(this).execute(getUrl(trasa))
             FetchURL(this).execute(getUrl(trasa2))
         }
 
