@@ -8,6 +8,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -69,10 +70,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         buttonDirections.setOnClickListener {
             FetchURL(this).execute(getUrl(trasa))
             FetchURL(this).execute(getUrl(trasa2))
-        }
-
-        logout.setOnClickListener {
-            QApp.fUser = null
         }
     }
 
@@ -191,6 +188,15 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_basic, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.logout) {
+            QApp.fAuth.signOut()
+            startActivity(Intent(this, SignInActivity::class.java))
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onResume() {
