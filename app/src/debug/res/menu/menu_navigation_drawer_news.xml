@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group
         android:id="@+id/grp_1"
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home"
-            android:title="Home" />
+            android:checkable="true"
+            android:checked="true"
+            android:icon="@drawable/icons8_cycle3"
+            android:title="Trasa szosowa" />
         <item
             android:id="@+id/nav_trending"
-            android:icon="@drawable/ic_whatshot"
-            android:title="Trending" />
+            android:checkable="true"
+            android:icon="@drawable/icons8_cycle2"
+            android:title="Trasa miejska" />
         <item
             android:id="@+id/nav_latest"
-            android:icon="@drawable/ic_schedule"
-            android:title="Latest" />
-        <item
-            android:id="@+id/nav_highlight"
-            android:icon="@drawable/ic_highlight"
-            android:title="Highlight" />
+            android:checkable="true"
+            android:icon="@drawable/icons8_cycle1"
+            android:title="Trasa górska" />
     </group>
     <group
         android:id="@+id/grp_2"

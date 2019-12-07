@@ -14,8 +14,9 @@
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/avatar"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="81dp"
+        android:layout_height="81dp"
         android:layout_margin="@dimen/spacing_large"
         android:src="@drawable/photo_male_6"
         app:civ_border_width="2dp"
@@ -23,7 +24,8 @@
         app:civ_shadow_radius="0" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/spacing_large"
@@ -32,16 +34,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_medium"
+            android:layout_marginBottom="@dimen/spacing_large"
             android:text="John Miller"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="johnmiller@mail.com"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     </LinearLayout>
 
