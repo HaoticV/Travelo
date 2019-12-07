@@ -26,10 +26,9 @@ import com.google.android.gms.maps.model.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_map.*
 
 
-class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickListener, TaskLoadedCallback {
+class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, TaskLoadedCallback {
 
     private val PERMISSION_ID: Int = 42
     private lateinit var mMap: GoogleMap
@@ -57,20 +56,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         enableLocalization()
         updateUILayer()
         initToolbar()
-
-        val trasa = Route(
-            LatLng(51.2368267, 22.5484466),
-            listOf(LatLng(51.2428279, 22.5070433), LatLng(51.2537949, 22.5551558)),
-            LatLng(51.2368791, 22.5484349)
-        )
-        buttonDirections.setOnClickListener {
-            FetchURL(this).execute(getUrl(trasa))
-        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.setOnPoiClickListener(this)
+        mMap.setOnMarkerClickListener(this)
 
         if (mLocationPermissionGranted) {
             mMap.isMyLocationEnabled = true
@@ -89,7 +79,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
                     )
                 }
                 for (item in hashMap) {
-                    googleMap.addMarker(MarkerOptions().position(item.value))
+                    googleMap.addMarker(MarkerOptions().position(item.value)).tag = item.key
                 }
             }
 
@@ -100,7 +90,24 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
             }
         }
         QApp.fData.reference.addValueEventListener(postListener)
+        mMap.setOnMarkerClickListener(this)
 
+    }
+
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        val markerId = marker?.tag.toString()
+        val markerListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val route = dataSnapshot.child("routes").child(markerId).getValue(Route::class.java)!!
+                FetchURL(this@MapsActivity).execute(getUrl(route))
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                Toast.makeText(this@MapsActivity, "Wystąpił błąd podczas pobierania trasy", Toast.LENGTH_SHORT).show()
+            }
+        }
+        QApp.fData.reference.addListenerForSingleValueEvent(markerListener)
+        return true
     }
 
     private fun requestPermissions() {
@@ -154,16 +161,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
         }
     }
 
-    override fun onPoiClick(poi: PointOfInterest) {
-        Toast.makeText(
-            applicationContext, "Clicked: " +
-                    poi.name + "\nPlace ID:" + poi.placeId +
-                    "\nLatitude:" + poi.latLng.latitude +
-                    " Longitude:" + poi.latLng.longitude,
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         var mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY)
@@ -201,7 +198,12 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickLis
     }
 
     override fun onTaskDone(vararg values: Any?) {
-        currentPolyline = mMap.addPolyline(values[0] as PolylineOptions?)
+        if (::currentPolyline.isInitialized) {
+            currentPolyline.remove()
+            currentPolyline = mMap.addPolyline(values[0] as PolylineOptions?)
+        } else {
+            currentPolyline = mMap.addPolyline(values[0] as PolylineOptions?)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
