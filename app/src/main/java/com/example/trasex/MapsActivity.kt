@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
@@ -18,7 +19,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener
-import com.crystal.crystalrangeseekbar.interfaces.OnSeekbarChangeListener
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
 import com.example.trasex.Auth.SignInActivity
@@ -48,6 +48,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private var mLocationPermissionGranted: Boolean = false
     private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
     private lateinit var currentPolyline: Polyline
+    private lateinit var mLocation: LatLng
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +65,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         mapView.getMapAsync(this)
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        mFusedLocationClient.lastLocation.addOnSuccessListener { mLocation = LatLng(it.latitude, it.longitude) }
         enableLocalization()
         updateUILayer()
         initToolbar()
@@ -256,11 +258,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         }
 
         val seekBarSearchRadius: CrystalSeekbar = header.seekbar_search_radius
-        seekBarSearchRadius.setOnSeekbarChangeListener(object : OnSeekbarChangeListener {
-            override fun valueChanged(minValue: Number) {
-                header.search_radius.text = minValue.toString() + "km"
-            }
-        })
+        seekBarSearchRadius.setOnSeekbarChangeListener { minValue -> header.search_radius.text = minValue.toString() + "km" }
 
         val seekBarSearchRouteLength: CrystalRangeSeekbar = header.seekbar_search_route_length
         seekBarSearchRouteLength.setOnRangeSeekbarChangeListener(object : OnRangeSeekbarChangeListener {
@@ -268,6 +266,83 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 header.search_route_length.text = minValue.toString() + " - " + maxValue.toString() + "km"
             }
         })
+
+        val eventListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val filteredListType: MutableList<DataSnapshot> = arrayListOf()
+                val list: List<DataSnapshot> =
+                    dataSnapshot.children.filter { it.key == "routes" }.flatMap { it.children } as MutableList<DataSnapshot>
+                if (header.checkBoxRoad.isChecked) {
+                    filteredListType.addAll(list.filter { it.child("type").value == "road" })
+                }
+                if (header.checkBoxCity.isChecked) {
+                    filteredListType.addAll(list.filter { it.child("type").value == "city" })
+                }
+                if (header.checkBoxMountain.isChecked) {
+                    filteredListType.addAll(list.filter { it.child("type").value == "mountain" })
+                }
+                val filteredListDistance: MutableList<DataSnapshot> = arrayListOf()
+                filteredListDistance.addAll(filteredListType.filter {
+                    it.child("distance").value.toString().toInt() / 1000 > header.seekbar_search_route_length.selectedMinValue.toInt()
+                            && it.child("distance").value.toString().toInt() / 1000 < header.seekbar_search_route_length.selectedMaxValue.toInt()
+                })
+                val filteredListRadius: MutableList<DataSnapshot> = arrayListOf()
+                for (item in filteredListDistance) {
+                    val origin = LatLng(
+                        item.child("origin").child("latitude").value.toString().toDouble(),
+                        filteredListDistance[0].child("origin").child("longitude").value.toString().toDouble()
+                    )
+                    val pointLocation = Location("currentLocation")
+                    pointLocation.latitude = origin.latitude
+                    pointLocation.longitude = origin.longitude
+                    val currentLocation = Location("currentLocation")
+                    currentLocation.latitude = mLocation.latitude
+                    currentLocation.longitude = mLocation.longitude
+                    if (pointLocation.distanceTo(currentLocation) / 1000 < header.seekbar_search_radius.selectedMinValue.toInt()) {
+                        filteredListRadius.add(item)
+                    }
+                }
+                mMap.clear()
+                for (item in filteredListRadius) {
+                    when (item.child("type").value) {
+                        "road" -> mMap.addMarker(
+                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_road)).position(
+                                LatLng(
+                                    item.child("origin").child("latitude").value.toString().toDouble(),
+                                    item.child("origin").child("longitude").value.toString().toDouble()
+                                )
+                            )
+                        )
+                            .tag = item.key
+                        "city" -> mMap.addMarker(
+                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_city)).position(
+                                LatLng(
+                                    item.child("origin").child("latitude").value.toString().toDouble(),
+                                    item.child("origin").child("longitude").value.toString().toDouble()
+                                )
+                            )
+                        )
+                            .tag = item.key
+                        "mountain" -> mMap.addMarker(
+                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_mountain)).position(
+                                LatLng(
+                                    item.child("origin").child("latitude").value.toString().toDouble(),
+                                    item.child("origin").child("longitude").value.toString().toDouble()
+                                )
+                            )
+                        ).tag = item.key
+                    }
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }
+        header.search_button.setOnClickListener {
+            QApp.fData.reference.addListenerForSingleValueEvent(eventListener)
+            drawer.closeDrawers()
+        }
     }
 
     //endregion

@@ -9,6 +9,8 @@ public class Route {
     List<com.example.trasex.LatLang> bounds;
     String mode = "bicycling";
     String type = "";
+    Long distance;
+    Long time;
 
 
     public Route() {
@@ -60,5 +62,21 @@ public class Route {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Long getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Long distance) {
+        this.distance = distance;
+    }
+
+    public Long getTime() {
+        return time;
+    }
+
+    public void setTime(Long time) {
+        this.time = time;
     }
 }
