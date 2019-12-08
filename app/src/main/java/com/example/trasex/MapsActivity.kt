@@ -11,9 +11,11 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.example.trasex.Auth.SignInActivity
 import com.example.trasex.Directionhelpers.FetchURL
 import com.example.trasex.Directionhelpers.TaskLoadedCallback
@@ -24,9 +26,11 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.activity_map.*
 
 
 class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, TaskLoadedCallback {
@@ -57,6 +61,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         enableLocalization()
         updateUILayer()
         initToolbar()
+        initNavigationMenu()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -121,6 +126,16 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         return true
     }
 
+    override fun onTaskDone(vararg values: Any?) {
+        currentPolyline = if (::currentPolyline.isInitialized) {
+            currentPolyline.remove()
+            mMap.addPolyline(values[0] as PolylineOptions?)
+        } else {
+            mMap.addPolyline(values[0] as PolylineOptions?)
+        }
+    }
+
+    //region permissions
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             this,
@@ -182,6 +197,48 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         mapView.onSaveInstanceState(mapViewBundle)
     }
 
+    //endregion
+
+    //region menu
+
+    private fun initToolbar() {
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        toolbar.setNavigationIcon(R.drawable.ic_menu)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.title = getString(R.string.app_name)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_basic, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.logout) {
+            QApp.fAuth.signOut()
+            startActivity(Intent(this, SignInActivity::class.java))
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun initNavigationMenu() {
+        val navigationView: NavigationView = findViewById(R.id.nav_view)
+        val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
+        val toggle: ActionBarDrawerToggle =
+            object : ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            }
+        drawer.addDrawerListener(toggle)
+        toggle.syncState()
+        navigationView.setNavigationItemSelectedListener {
+            drawer.closeDrawers()
+            true
+        }
+    }
+
+    //endregion
+
     private fun getUrl(trasa: Route): String? { // Origin of route
         val strOrigin = "origin=" + trasa.origin.latitude + "," + trasa.origin.longitude
         // Destination of route
@@ -201,37 +258,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         return final
     }
 
-    private fun initToolbar() {
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        toolbar.setNavigationIcon(R.drawable.ic_menu)
-        setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.app_name)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-    }
-
-    override fun onTaskDone(vararg values: Any?) {
-        if (::currentPolyline.isInitialized) {
-            currentPolyline.remove()
-            currentPolyline = mMap.addPolyline(values[0] as PolylineOptions?)
-        } else {
-            currentPolyline = mMap.addPolyline(values[0] as PolylineOptions?)
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_basic, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.logout) {
-            QApp.fAuth.signOut()
-            startActivity(Intent(this, SignInActivity::class.java))
-            finish()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
+    //region lifecycle
     override fun onResume() {
         super.onResume()
         mapView.onResume()
@@ -261,5 +288,5 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         super.onLowMemory()
         mapView.onLowMemory()
     }
-
+//endregion
 }
