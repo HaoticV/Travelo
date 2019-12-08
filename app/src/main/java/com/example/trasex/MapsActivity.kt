@@ -10,8 +10,12 @@ import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -31,6 +35,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_map.*
+import kotlinx.android.synthetic.main.navigation_drawer.view.*
 
 
 class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, TaskLoadedCallback {
@@ -96,7 +101,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         QApp.fData.reference.addValueEventListener(postListener)
         mMap.setOnMarkerClickListener(this)
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding))
-
     }
 
     override fun onMarkerClick(marker: Marker?): Boolean {
@@ -225,6 +229,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     private fun initNavigationMenu() {
         val navigationView: NavigationView = findViewById(R.id.nav_view)
+        navigationView.inflateHeaderView(R.layout.navigation_drawer)
+        val header: View = navigationView.getHeaderView(0)
         val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
         val toggle: ActionBarDrawerToggle =
             object : ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
@@ -235,6 +241,18 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             drawer.closeDrawers()
             true
         }
+
+        val seekBarSearchRadius: AppCompatSeekBar = header.seekbar_search_radius
+        header.search_radius.text = seekBarSearchRadius.progress.toString() + "km"
+        seekBarSearchRadius.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                header.search_radius.text = progress.toString() + "km"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+
     }
 
     //endregion
