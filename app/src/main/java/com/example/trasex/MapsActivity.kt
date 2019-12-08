@@ -87,8 +87,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 for (data: DataSnapshot in dataSnapshot.children.filter { it.key == "routes" }.flatMap { it.children }) {
                     hashMap[data.key.toString()] = Pair(
                         data.child("type").value.toString(), LatLng(
-                        data.child("origin").child("latitude").value.toString().toDouble(),
-                        data.child("origin").child("longitude").value.toString().toDouble()
+                            data.child("origin").child("latitude").value.toString().toDouble(),
+                            data.child("origin").child("longitude").value.toString().toDouble()
                         )
                     )
                 }
