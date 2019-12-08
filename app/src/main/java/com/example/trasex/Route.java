@@ -8,6 +8,7 @@ public class Route {
     com.example.trasex.LatLang destination;
     List<com.example.trasex.LatLang> bounds;
     String mode = "bicycling";
+    String type = "";
 
 
     public Route() {
@@ -51,5 +52,13 @@ public class Route {
 
     public void setBounds(List<LatLang> bounds) {
         this.bounds = bounds;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

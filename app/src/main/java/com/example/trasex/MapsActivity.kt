@@ -81,17 +81,29 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             mMap.isMyLocationEnabled = true
             mMap.uiSettings.isZoomControlsEnabled = true
         }
-        val hashMap: HashMap<String, LatLng> = HashMap()
+        val hashMap: HashMap<String, Pair<String, LatLng>> = HashMap()
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (data: DataSnapshot in dataSnapshot.children.filter { it.key == "routes" }.flatMap { it.children }) {
-                    hashMap[data.key.toString()] = LatLng(
+                    hashMap[data.key.toString()] = Pair(
+                        data.child("type").value.toString(), LatLng(
                         data.child("origin").child("latitude").value.toString().toDouble(),
                         data.child("origin").child("longitude").value.toString().toDouble()
+                        )
                     )
                 }
                 for (item in hashMap) {
-                    googleMap.addMarker(MarkerOptions().position(item.value)).tag = item.key
+                    when (item.value.first) {
+                        "road" -> googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_road)).position(item.value.second))
+                            .tag = item.key
+                        "city" -> googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_city)).position(item.value.second))
+                            .tag = item.key
+                        "mountain" -> googleMap.addMarker(
+                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_mountain)).position(
+                                item.value.second
+                            )
+                        ).tag = item.key
+                    }
                 }
             }
 
