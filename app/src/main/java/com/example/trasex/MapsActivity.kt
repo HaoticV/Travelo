@@ -19,6 +19,7 @@ import com.example.trasex.Directionhelpers.FetchURL
 import com.example.trasex.Directionhelpers.TaskLoadedCallback
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -60,7 +61,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.setOnMarkerClickListener(this)
+        val bounds = LatLngBounds(LatLng(48.844458, 13.914181), LatLng(54.972622, 23.583997))
+        val width = resources.displayMetrics.widthPixels
+        val height = resources.displayMetrics.heightPixels
+        val padding = (width * 0.12).toInt()
 
         if (mLocationPermissionGranted) {
             mMap.isMyLocationEnabled = true
@@ -70,12 +74,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (data: DataSnapshot in dataSnapshot.children.filter { it.key == "routes" }.flatMap { it.children }) {
-                    hashMap.put(
-                        data.key.toString(),
-                        LatLng(
-                            data.child("origin").child("latitude").value.toString().toDouble(),
-                            data.child("origin").child("longitude").value.toString().toDouble()
-                        )
+                    hashMap[data.key.toString()] = LatLng(
+                        data.child("origin").child("latitude").value.toString().toDouble(),
+                        data.child("origin").child("longitude").value.toString().toDouble()
                     )
                 }
                 for (item in hashMap) {
@@ -84,13 +85,12 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
                 Log.w(this@MapsActivity.toString(), "loadPost:onCancelled", databaseError.toException())
-                // ...
             }
         }
         QApp.fData.reference.addValueEventListener(postListener)
         mMap.setOnMarkerClickListener(this)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding))
 
     }
 
@@ -100,6 +100,17 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val route = dataSnapshot.child("routes").child(markerId).getValue(Route::class.java)!!
                 FetchURL(this@MapsActivity).execute(getUrl(route))
+                mMap.animateCamera(
+                    CameraUpdateFactory.newLatLngBounds(
+                        LatLngBounds(
+                            LatLng(route.bounds[1].latitude, route.bounds[1].longitude),
+                            LatLng(route.bounds[0].latitude, route.bounds[0].longitude)
+                        ),
+                        resources.displayMetrics.widthPixels,
+                        resources.displayMetrics.heightPixels,
+                        50
+                    )
+                )
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -186,7 +197,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         // Output format
         val output = "json"
         // Building the url to the web service
-        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key)
+        val final = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key)
+        return final
     }
 
     private fun initToolbar() {

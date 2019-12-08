@@ -4,9 +4,11 @@ import java.util.List;
 
 public class Route {
     com.example.trasex.LatLang origin;
-    List<com.example.trasex.LatLang> waypoints;
+    List<LatLang> waypoints;
     com.example.trasex.LatLang destination;
+    List<com.example.trasex.LatLang> bounds;
     String mode = "bicycling";
+
 
     public Route() {
     }
@@ -41,5 +43,13 @@ public class Route {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public List<LatLang> getBounds() {
+        return bounds;
+    }
+
+    public void setBounds(List<LatLang> bounds) {
+        this.bounds = bounds;
     }
 }
