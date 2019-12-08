@@ -11,15 +11,16 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener
+import com.crystal.crystalrangeseekbar.interfaces.OnSeekbarChangeListener
+import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
+import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
 import com.example.trasex.Auth.SignInActivity
 import com.example.trasex.Directionhelpers.FetchURL
 import com.example.trasex.Directionhelpers.TaskLoadedCallback
@@ -242,17 +243,19 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             true
         }
 
-        val seekBarSearchRadius: AppCompatSeekBar = header.seekbar_search_radius
-        header.search_radius.text = seekBarSearchRadius.progress.toString() + "km"
-        seekBarSearchRadius.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                header.search_radius.text = progress.toString() + "km"
+        val seekBarSearchRadius: CrystalSeekbar = header.seekbar_search_radius
+        seekBarSearchRadius.setOnSeekbarChangeListener(object : OnSeekbarChangeListener {
+            override fun valueChanged(minValue: Number) {
+                header.search_radius.text = minValue.toString() + "km"
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
+        val seekBarSearchRouteLength: CrystalRangeSeekbar = header.seekbar_search_route_length
+        seekBarSearchRouteLength.setOnRangeSeekbarChangeListener(object : OnRangeSeekbarChangeListener {
+            override fun valueChanged(minValue: Number, maxValue: Number) {
+                header.search_route_length.text = minValue.toString() + " - " + maxValue.toString() + "km"
+            }
+        })
     }
 
     //endregion
