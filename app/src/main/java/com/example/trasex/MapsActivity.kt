@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
@@ -31,12 +32,14 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.navigation_drawer.view.*
+import kotlinx.android.synthetic.main.sheet_map.*
 
 
 class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, TaskLoadedCallback {
@@ -49,6 +52,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
     private lateinit var currentPolyline: Polyline
     private lateinit var mLocation: LatLng
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +74,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         updateUILayer()
         initToolbar()
         initNavigationMenu()
+        initBottomSheet()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -116,7 +121,13 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         QApp.fData.reference.addValueEventListener(postListener)
         mMap.setOnMarkerClickListener(this)
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding))
+        mMap.setOnMapClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            currentPolyline.remove()
+            mMap.setPadding(0, 0, 0, 0)
+        }
     }
+
 
     override fun onMarkerClick(marker: Marker?): Boolean {
         val markerId = marker?.tag.toString()
@@ -132,9 +143,12 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                         ),
                         resources.displayMetrics.widthPixels,
                         resources.displayMetrics.heightPixels,
-                        50
+                        100
                     )
                 )
+                route_name.text = route.name
+                route_distance.text = route.distanceText
+                route_time.text = route.timeText
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -142,6 +156,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             }
         }
         QApp.fData.reference.addListenerForSingleValueEvent(markerListener)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        mMap.setPadding(0, 0, 0, 200)
         return true
     }
 
@@ -345,6 +361,30 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         }
     }
 
+    private fun initBottomSheet() { // get the bottom sheet view
+        val llBottomSheet = findViewById<LinearLayout>(R.id.bottom_sheet)
+        bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(p0: View, p1: Float) {
+
+            }
+
+            override fun onStateChanged(p0: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                    BottomSheetBehavior.STATE_DRAGGING -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_DRAGGING
+                    BottomSheetBehavior.PEEK_HEIGHT_AUTO -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    BottomSheetBehavior.STATE_SETTLING -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_SETTLING
+                    BottomSheetBehavior.STATE_EXPANDED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                }
+            }
+        })
+    }
+
     //endregion
 
     private fun getUrl(trasa: Route): String? { // Origin of route
@@ -396,5 +436,5 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         super.onLowMemory()
         mapView.onLowMemory()
     }
-//endregion
+    //endregion
 }

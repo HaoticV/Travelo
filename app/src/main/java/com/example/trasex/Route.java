@@ -3,14 +3,17 @@ package com.example.trasex;
 import java.util.List;
 
 public class Route {
+    String name;
     com.example.trasex.LatLang origin;
     List<LatLang> waypoints;
     com.example.trasex.LatLang destination;
     List<com.example.trasex.LatLang> bounds;
     String mode = "bicycling";
-    String type = "";
+    String type;
     Long distance;
+    String distanceText;
     Long time;
+    String timeText;
 
 
     public Route() {
@@ -78,5 +81,29 @@ public class Route {
 
     public void setTime(Long time) {
         this.time = time;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDistanceText() {
+        return distanceText;
+    }
+
+    public void setDistanceText(String distanceText) {
+        this.distanceText = distanceText;
+    }
+
+    public String getTimeText() {
+        return timeText;
+    }
+
+    public void setTimeText(String timeText) {
+        this.timeText = timeText;
     }
 }
