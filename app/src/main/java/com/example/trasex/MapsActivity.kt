@@ -37,6 +37,8 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.smarteist.autoimageslider.IndicatorAnimations
+import com.smarteist.autoimageslider.SliderAnimations
 import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.navigation_drawer.view.*
 import kotlinx.android.synthetic.main.sheet_map.*
@@ -383,6 +385,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
             }
         })
+        imageSlider.sliderAdapter = SliderAdapter(this)
+        imageSlider.setIndicatorAnimation(IndicatorAnimations.DROP)
+        imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
     }
 
     //endregion
