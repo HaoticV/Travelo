@@ -175,7 +175,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                         imageSlider.sliderAdapter = SliderAdapter(this, images)
                     }
                 }
-            }
+            }.addOnCompleteListener { images = arrayListOf() }
             .addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }
 
         imageSlider.setIndicatorAnimation(IndicatorAnimations.DROP)
