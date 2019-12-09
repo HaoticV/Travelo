@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/material_bg_1" />
+            android:src="@drawable/header_background_green" />
 
         <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/avatar"

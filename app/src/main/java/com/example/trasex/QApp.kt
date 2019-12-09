@@ -6,6 +6,7 @@ import android.content.res.Resources
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 
 class QApp : Application() {
 
@@ -17,6 +18,7 @@ class QApp : Application() {
 
         fData = FirebaseDatabase.getInstance()
         fAuth = FirebaseAuth.getInstance()
+        fStorage = FirebaseStorage.getInstance()
 
         fUser = fAuth.currentUser
     }
@@ -27,6 +29,7 @@ class QApp : Application() {
 
         lateinit var fData: FirebaseDatabase
         lateinit var fAuth: FirebaseAuth
+        lateinit var fStorage: FirebaseStorage
 
         var fUser: FirebaseUser? = null
     }

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -55,6 +56,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private lateinit var currentPolyline: Polyline
     private lateinit var mLocation: LatLng
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private var images: ArrayList<Uri> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,6 +162,24 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         QApp.fData.reference.addListenerForSingleValueEvent(markerListener)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         mMap.setPadding(0, 0, 0, 200)
+
+        //val uploadTask =
+        //    QApp.fStorage.reference.child("image/"+markerId+"/"+ UUID.randomUUID().toString()).putFile(Uri.parse("android.resource://com.example.trasex/" + R.drawable.header_background_green))
+        //uploadTask.addOnFailureListener { Toast.makeText(this, "Nie udało się", Toast.LENGTH_SHORT).show() }
+        //    .addOnSuccessListener { Toast.makeText(this, "Udało się", Toast.LENGTH_SHORT).show() }
+        QApp.fStorage.reference.child("image/" + markerId).listAll()
+            .addOnSuccessListener { results ->
+                results.items.forEach { item ->
+                    item.downloadUrl.addOnSuccessListener { uri ->
+                        images.add(uri)
+                        imageSlider.sliderAdapter = SliderAdapter(this, images)
+                    }
+                }
+            }
+            .addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }
+
+        imageSlider.setIndicatorAnimation(IndicatorAnimations.DROP)
+        imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
         return true
     }
 
@@ -385,9 +405,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
             }
         })
-        imageSlider.sliderAdapter = SliderAdapter(this)
-        imageSlider.setIndicatorAnimation(IndicatorAnimations.DROP)
-        imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
+        //QApp.fStorage.reference.child("image/png").downloadUrl.addOnSuccessListener { p0 -> images.add(Pair("", p0)) }
+        //    .addOnFailureListener { Toast.makeText(this, "Nie udało się", Toast.LENGTH_SHORT).show() }
+//
     }
 
     //endregion

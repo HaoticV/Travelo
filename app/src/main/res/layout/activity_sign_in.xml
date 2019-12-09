@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:text="Witaj w aplikacji Trasex"
+            android:text="Witaj w aplikacji Travelo"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:textColor="@color/green_300"
             android:textStyle="bold" />
