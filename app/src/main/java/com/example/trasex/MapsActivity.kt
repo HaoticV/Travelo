@@ -20,7 +20,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
 import com.example.trasex.Auth.SignInActivity
@@ -72,9 +71,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         mapView.onCreate(mapViewBundle)
         mapView.getMapAsync(this)
 
+        enableLocalization()
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mFusedLocationClient.lastLocation.addOnSuccessListener { mLocation = LatLng(it.latitude, it.longitude) }
-        enableLocalization()
         updateUILayer()
         initToolbar()
         initNavigationMenu()
@@ -83,7 +82,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val bounds = LatLngBounds(LatLng(48.844458, 13.914181), LatLng(54.972622, 23.583997))
+        val boundsPoland = LatLngBounds(LatLng(48.844458, 13.914181), LatLng(54.972622, 23.583997))
         val width = resources.displayMetrics.widthPixels
         val height = resources.displayMetrics.heightPixels
         val padding = (width * 0.12).toInt()
@@ -124,7 +123,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         }
         QApp.fData.reference.addValueEventListener(postListener)
         mMap.setOnMarkerClickListener(this)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsPoland, width, height, padding))
         mMap.setOnMapClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             currentPolyline.remove()
@@ -299,11 +298,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         seekBarSearchRadius.setOnSeekbarChangeListener { minValue -> header.search_radius.text = minValue.toString() + "km" }
 
         val seekBarSearchRouteLength: CrystalRangeSeekbar = header.seekbar_search_route_length
-        seekBarSearchRouteLength.setOnRangeSeekbarChangeListener(object : OnRangeSeekbarChangeListener {
-            override fun valueChanged(minValue: Number, maxValue: Number) {
-                header.search_route_length.text = minValue.toString() + " - " + maxValue.toString() + "km"
-            }
-        })
+        seekBarSearchRouteLength.setOnRangeSeekbarChangeListener { minValue, maxValue ->
+            header.search_route_length.text = minValue.toString() + " - " + maxValue.toString() + "km"
+        }
 
         val eventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
