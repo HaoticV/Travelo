@@ -1,13 +1,13 @@
-package com.example.trasex;
+package com.example.travelo;
 
 import java.util.List;
 
 public class Route {
     String name;
-    com.example.trasex.LatLang origin;
+    com.example.travelo.LatLang origin;
     List<LatLang> waypoints;
-    com.example.trasex.LatLang destination;
-    List<com.example.trasex.LatLang> bounds;
+    com.example.travelo.LatLang destination;
+    List<com.example.travelo.LatLang> bounds;
     String mode = "bicycling";
     String type;
     Long distance;

@@ -1,12 +1,12 @@
-package com.example.trasex.Directionhelpers;
+package com.example.travelo.Directionhelpers;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.trasex.QApp;
-import com.example.trasex.R;
+import com.example.travelo.QApp;
+import com.example.travelo.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 

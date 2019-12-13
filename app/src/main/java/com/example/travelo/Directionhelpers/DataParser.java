@@ -1,4 +1,4 @@
-package com.example.trasex.Directionhelpers;
+package com.example.travelo.Directionhelpers;
 
 import com.google.android.gms.maps.model.LatLng;
 

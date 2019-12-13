@@ -1,4 +1,4 @@
-package com.example.trasex
+package com.example.travelo
 
 import android.app.Activity
 import android.content.Intent

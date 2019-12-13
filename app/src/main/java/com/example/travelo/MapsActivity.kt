@@ -1,4 +1,4 @@
-package com.example.trasex
+package com.example.travelo
 
 import android.Manifest
 import android.content.Context
@@ -22,9 +22,9 @@ import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
-import com.example.trasex.Auth.SignInActivity
-import com.example.trasex.Directionhelpers.FetchURL
-import com.example.trasex.Directionhelpers.TaskLoadedCallback
+import com.example.travelo.Auth.SignInActivity
+import com.example.travelo.Directionhelpers.FetchURL
+import com.example.travelo.Directionhelpers.TaskLoadedCallback
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory

@@ -1,4 +1,4 @@
-package com.example.trasex.Auth;
+package com.example.travelo.Auth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +12,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.example.trasex.BaseActivity;
-import com.example.trasex.MapsActivity;
-import com.example.trasex.R;
+import com.example.travelo.BaseActivity;
+import com.example.travelo.MapsActivity;
+import com.example.travelo.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;

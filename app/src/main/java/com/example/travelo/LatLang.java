@@ -1,4 +1,4 @@
-package com.example.trasex;
+package com.example.travelo;
 
 public class LatLang {
     Double latitude;
