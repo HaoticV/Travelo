@@ -1,13 +1,13 @@
-package com.example.travelo;
+package com.example.travelo.Models;
 
 import java.util.List;
 
 public class Route {
     String name;
-    com.example.travelo.LatLang origin;
+    LatLang origin;
     List<LatLang> waypoints;
-    com.example.travelo.LatLang destination;
-    List<com.example.travelo.LatLang> bounds;
+    LatLang destination;
+    List<LatLang> bounds;
     String mode = "bicycling";
     String type;
     Long distance;

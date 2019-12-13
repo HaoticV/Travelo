@@ -36,7 +36,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="com.example.travelo.MapsActivity"
+            android:name="com.example.travelo.Map.MapsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_maps">
             <intent-filter>

@@ -13,7 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.travelo.BaseActivity;
-import com.example.travelo.MapsActivity;
+import com.example.travelo.Map.MapsActivity;
 import com.example.travelo.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

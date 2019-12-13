@@ -1,4 +1,4 @@
-package com.example.travelo;
+package com.example.travelo.Models;
 
 public class LatLang {
     Double latitude;

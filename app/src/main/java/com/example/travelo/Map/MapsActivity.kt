@@ -1,4 +1,4 @@
-package com.example.travelo
+package com.example.travelo.Map
 
 import android.Manifest
 import android.content.Context
@@ -13,7 +13,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
@@ -23,8 +22,12 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
 import com.example.travelo.Auth.SignInActivity
+import com.example.travelo.BaseActivity
 import com.example.travelo.Directionhelpers.FetchURL
 import com.example.travelo.Directionhelpers.TaskLoadedCallback
+import com.example.travelo.Models.Route
+import com.example.travelo.QApp
+import com.example.travelo.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -32,6 +35,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.DataSnapshot
@@ -55,7 +60,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private lateinit var currentPolyline: Polyline
     private lateinit var mLocation: LatLng
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
-    private var images: ArrayList<Uri> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +87,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         val boundsPoland = LatLngBounds(LatLng(48.844458, 13.914181), LatLng(54.972622, 23.583997))
+        val boundsLublin = LatLngBounds(LatLng(51.066020, 22.340719), LatLng(51.355511, 22.742954))
         val width = resources.displayMetrics.widthPixels
         val height = resources.displayMetrics.heightPixels
         val padding = (width * 0.12).toInt()
@@ -123,10 +128,12 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         }
         QApp.fData.reference.addValueEventListener(postListener)
         mMap.setOnMarkerClickListener(this)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsPoland, width, height, padding))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsLublin, width, height, padding))
         mMap.setOnMapClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            currentPolyline.remove()
+            if (::currentPolyline.isInitialized) {
+                currentPolyline.remove()
+            }
             mMap.setPadding(0, 0, 0, 0)
         }
     }
@@ -166,16 +173,22 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         //    QApp.fStorage.reference.child("image/"+markerId+"/"+ UUID.randomUUID().toString()).putFile(Uri.parse("android.resource://com.example.trasex/" + R.drawable.header_background_green))
         //uploadTask.addOnFailureListener { Toast.makeText(this, "Nie udało się", Toast.LENGTH_SHORT).show() }
         //    .addOnSuccessListener { Toast.makeText(this, "Udało się", Toast.LENGTH_SHORT).show() }
-        QApp.fStorage.reference.child("image/" + markerId).listAll()
+        var images: ArrayList<Uri> = arrayListOf()
+        Tasks.whenAllComplete(QApp.fStorage.reference.child("image/" + markerId).listAll()
             .addOnSuccessListener { results ->
                 results.items.forEach { item ->
                     item.downloadUrl.addOnSuccessListener { uri ->
                         images.add(uri)
-                        imageSlider.sliderAdapter = SliderAdapter(this, images)
+                    }.addOnSuccessListener {
+                        imageSlider.sliderAdapter = SliderAdapter(this, markerId, images)
                     }
                 }
-            }.addOnCompleteListener { images = arrayListOf() }
-            .addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }
+            }
+            .addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }).addOnSuccessListener {
+            images = arrayListOf()
+            imageSlider.sliderAdapter = SliderAdapter(this, markerId, images)
+        }
+
 
         imageSlider.setIndicatorAnimation(IndicatorAnimations.DROP)
         imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
@@ -227,20 +240,20 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         }
     }
 
-    private fun isLocationEnabled(): Boolean {
-        val locationManager: LocationManager =
-            getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-            LocationManager.NETWORK_PROVIDER
-        )
-    }
-
     private fun enableLocalization() {
         if (!isLocationEnabled()) {
             Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(intent)
         }
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        val locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -285,12 +298,20 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         val header: View = navigationView.getHeaderView(0)
         val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
         val toggle: ActionBarDrawerToggle =
-            object : ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            object : ActionBarDrawerToggle(
+                this, drawer, toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+            ) {
+                override fun onDrawerStateChanged(newState: Int) {
+                    super.onDrawerStateChanged(newState)
+                    if (newState == DrawerLayout.STATE_SETTLING) {
+                        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    }
+                }
             }
         drawer.addDrawerListener(toggle)
-        toggle.syncState()
         navigationView.setNavigationItemSelectedListener {
-            drawer.closeDrawers()
             true
         }
 
@@ -381,9 +402,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     }
 
     private fun initBottomSheet() { // get the bottom sheet view
-        val llBottomSheet = findViewById<LinearLayout>(R.id.bottom_sheet)
-        bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(p0: View, p1: Float) {
@@ -395,7 +414,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                     BottomSheetBehavior.STATE_HIDDEN -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                     BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                     BottomSheetBehavior.STATE_DRAGGING -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_DRAGGING
-                    BottomSheetBehavior.PEEK_HEIGHT_AUTO -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
                     BottomSheetBehavior.STATE_SETTLING -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_SETTLING
                     BottomSheetBehavior.STATE_EXPANDED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
@@ -404,7 +422,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         })
         //QApp.fStorage.reference.child("image/png").downloadUrl.addOnSuccessListener { p0 -> images.add(Pair("", p0)) }
         //    .addOnFailureListener { Toast.makeText(this, "Nie udało się", Toast.LENGTH_SHORT).show() }
-//
+        //
     }
 
     //endregion
@@ -458,5 +476,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         super.onLowMemory()
         mapView.onLowMemory()
     }
+
     //endregion
 }
