@@ -174,20 +174,24 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         //uploadTask.addOnFailureListener { Toast.makeText(this, "Nie udało się", Toast.LENGTH_SHORT).show() }
         //    .addOnSuccessListener { Toast.makeText(this, "Udało się", Toast.LENGTH_SHORT).show() }
         var images: ArrayList<Uri> = arrayListOf()
-        Tasks.whenAllComplete(QApp.fStorage.reference.child("image/" + markerId).listAll()
+        QApp.fStorage.reference.child("image/" + markerId).listAll()
             .addOnSuccessListener { results ->
                 results.items.forEach { item ->
-                    item.downloadUrl.addOnSuccessListener { uri ->
+                    Tasks.whenAllComplete(item.downloadUrl.addOnSuccessListener { uri ->
                         images.add(uri)
-                    }.addOnSuccessListener {
-                        imageSlider.sliderAdapter = SliderAdapter(this, markerId, images)
+                    }).addOnSuccessListener {
+                        if (images.size != 0) {
+                            imageSlider.sliderAdapter = SliderAdapter(this, markerId, images)
+                            imageSlider.sliderAdapter.notifyDataSetChanged()
+                            images = arrayListOf()
+                        }
                     }
                 }
             }
-            .addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }).addOnSuccessListener {
-            images = arrayListOf()
-            imageSlider.sliderAdapter = SliderAdapter(this, markerId, images)
-        }
+            .addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }.addOnSuccessListener {
+                imageSlider.sliderAdapter = SliderAdapter(this, markerId, images)
+                images = arrayListOf()
+            }
 
 
         imageSlider.setIndicatorAnimation(IndicatorAnimations.DROP)
