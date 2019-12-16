@@ -1,6 +1,7 @@
 package com.example.travelo.map
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -27,6 +28,7 @@ import com.example.travelo.R
 import com.example.travelo.auth.SignInActivity
 import com.example.travelo.directionHelpers.FetchURL
 import com.example.travelo.directionHelpers.TaskLoadedCallback
+import com.example.travelo.lib.ViewAnimation
 import com.example.travelo.models.Route
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -46,6 +48,7 @@ import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderPager
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.android.synthetic.main.activity_map.*
+import kotlinx.android.synthetic.main.fab_add_photo.*
 import kotlinx.android.synthetic.main.navigation_drawer.view.*
 import kotlinx.android.synthetic.main.sheet_map.*
 
@@ -61,6 +64,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private lateinit var currentPolyline: Polyline
     private lateinit var mLocation: LatLng
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private var rotate = false
+    private lateinit var lyt_mic: View
+    private lateinit var lyt_call: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -189,23 +195,18 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
             }.addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }
 
-
-        imageSlider.getSliderPager().addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                if (position == imageSlider.sliderAdapter.count - 1) {
-                    floatingActionButton.show()
-                } else
-                    floatingActionButton.hide()
-            }
-
-        })
-        imageSlider.setIndicatorAnimation(IndicatorAnimations.DROP)
-        imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
         return true
+    }
+
+    private fun toggleFabMode(v: View?) {
+        rotate = ViewAnimation.rotateFab(v, !rotate)
+        if (rotate) {
+            ViewAnimation.showIn(lyt_mic)
+            ViewAnimation.showIn(lyt_call)
+        } else {
+            ViewAnimation.showOut(findViewById(R.id.lyt_mic))
+            ViewAnimation.showOut(findViewById(R.id.lyt_call))
+        }
     }
 
     override fun onTaskDone(vararg values: Any?) {
@@ -305,6 +306,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         return super.onOptionsItemSelected(item)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initNavigationMenu() {
         val navigationView: NavigationView = findViewById(R.id.nav_view)
         navigationView.inflateHeaderView(R.layout.navigation_drawer)
@@ -436,6 +438,29 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         //QApp.fStorage.reference.child("image/png").downloadUrl.addOnSuccessListener { p0 -> images.add(Pair("", p0)) }
         //    .addOnFailureListener { Toast.makeText(this, "Nie udało się", Toast.LENGTH_SHORT).show() }
         //
+
+        imageSlider.setIndicatorAnimation(IndicatorAnimations.DROP)
+        imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
+
+        imageSlider.getSliderPager().addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                if (position == imageSlider.sliderAdapter.count - 1) {
+                    fab_add.show()
+                } else
+                    fab_add.hide()
+            }
+        })
+
+        lyt_mic = findViewById(R.id.lyt_mic)
+        lyt_call = findViewById(R.id.lyt_call)
+        ViewAnimation.initShowOut(lyt_mic)
+        ViewAnimation.initShowOut(lyt_call)
+
+        fab_add.setOnClickListener { view -> toggleFabMode(view) }
     }
 
     //endregion
@@ -493,8 +518,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private fun SliderView.getSliderPager(): SliderPager {
         val field = javaClass.getDeclaredField("mSliderPager")
         field.isAccessible = true
-        val sliderPager: SliderPager = field.get(this) as SliderPager
-        return sliderPager
+        return field.get(this) as SliderPager
     }
 
     //endregion

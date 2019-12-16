@@ -136,22 +136,30 @@
 
             </LinearLayout>
 
-            <com.smarteist.autoimageslider.SliderView
-                android:id="@+id/imageSlider"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                app:sliderAnimationDuration="300"
-                app:sliderCircularHandlerEnabled="false"
-                app:sliderIndicatorAnimationDuration="300"
-                app:sliderIndicatorGravity="center_horizontal|bottom"
-                app:sliderIndicatorMargin="15dp"
-                app:sliderIndicatorOrientation="horizontal"
-                app:sliderIndicatorPadding="3dp"
-                app:sliderIndicatorRadius="2dp"
-                app:sliderIndicatorSelectedColor="@color/colorAccent"
-                app:sliderIndicatorUnselectedColor="#FFF">
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-            </com.smarteist.autoimageslider.SliderView>
+                <com.smarteist.autoimageslider.SliderView
+                    android:id="@+id/imageSlider"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    app:sliderAnimationDuration="300"
+                    app:sliderCircularHandlerEnabled="false"
+                    app:sliderIndicatorAnimationDuration="300"
+                    app:sliderIndicatorGravity="center_horizontal|bottom"
+                    app:sliderIndicatorMargin="15dp"
+                    app:sliderIndicatorOrientation="horizontal"
+                    app:sliderIndicatorPadding="3dp"
+                    app:sliderIndicatorRadius="2dp"
+                    app:sliderIndicatorSelectedColor="@color/colorAccent"
+                    app:sliderIndicatorUnselectedColor="#FFF">
+
+                </com.smarteist.autoimageslider.SliderView>
+
+                <include layout="@layout/fab_add_photo" />
+
+            </FrameLayout>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
