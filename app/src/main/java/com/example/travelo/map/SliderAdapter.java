@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.travelo.R;
-import com.example.travelo.database.DatabaseUtils;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
 import java.util.List;
@@ -38,15 +37,14 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapter
                 .load(images.get(position))
                 .into(viewHolder.imageViewBackground);
 
-
-        ImageView dodaj = viewHolder.itemView.findViewById(R.id.iv_auto_image_slider);
-        dodaj.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (position == getCount()-1)
-                    DatabaseUtils.Companion.addImageToStorage(context, markerId);
-            }
-        });
+        //ImageView dodaj = viewHolder.itemView.findViewById(R.id.iv_auto_image_slider);
+        //dodaj.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View v) {
+        //        if (position == getCount()-1)
+        //            DatabaseUtils.Companion.addImageToStorage(context, markerId);
+        //    }
+        //});
 
     }
 

@@ -136,7 +136,7 @@
 
             </LinearLayout>
 
-            <com.smarteist.autoimageslider.SliderView
+            <com.example.travelo.CustomSliderView
                 android:id="@+id/imageSlider"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
@@ -149,7 +149,16 @@
                 app:sliderIndicatorPadding="3dp"
                 app:sliderIndicatorRadius="2dp"
                 app:sliderIndicatorSelectedColor="@color/colorAccent"
-                app:sliderIndicatorUnselectedColor="#FFF" />
+                app:sliderIndicatorUnselectedColor="#FFF">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floatingActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:visibility="gone"
+                    app:srcCompat="@android:drawable/ic_input_add" />
+            </com.example.travelo.CustomSliderView>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
