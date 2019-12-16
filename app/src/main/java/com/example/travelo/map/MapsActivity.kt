@@ -43,6 +43,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.smarteist.autoimageslider.IndicatorAnimations
 import com.smarteist.autoimageslider.SliderAnimations
+import com.smarteist.autoimageslider.SliderPager
+import com.smarteist.autoimageslider.SliderView
 import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.navigation_drawer.view.*
 import kotlinx.android.synthetic.main.sheet_map.*
@@ -188,7 +190,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             }.addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }
 
 
-        imageSlider.sliderPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        imageSlider.getSliderPager().addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
@@ -486,6 +488,13 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
+    }
+
+    private fun SliderView.getSliderPager(): SliderPager {
+        val field = javaClass.getDeclaredField("mSliderPager")
+        field.isAccessible = true
+        val sliderPager: SliderPager = field.get(this) as SliderPager
+        return sliderPager
     }
 
     //endregion

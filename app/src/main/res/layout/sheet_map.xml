@@ -136,7 +136,7 @@
 
             </LinearLayout>
 
-            <com.example.travelo.libs.CustomSliderView
+            <com.smarteist.autoimageslider.SliderView
                 android:id="@+id/imageSlider"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
@@ -149,7 +149,9 @@
                 app:sliderIndicatorPadding="3dp"
                 app:sliderIndicatorRadius="2dp"
                 app:sliderIndicatorSelectedColor="@color/colorAccent"
-                app:sliderIndicatorUnselectedColor="#FFF"></com.example.travelo.libs.CustomSliderView>
+                app:sliderIndicatorUnselectedColor="#FFF">
+
+            </com.smarteist.autoimageslider.SliderView>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
