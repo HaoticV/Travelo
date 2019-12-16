@@ -18,10 +18,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.viewpager.widget.ViewPager
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
 import com.example.travelo.BaseActivity
-import com.example.travelo.CustomSliderView
 import com.example.travelo.QApp
 import com.example.travelo.R
 import com.example.travelo.auth.SignInActivity
@@ -187,17 +187,17 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
             }.addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }
 
-        imageSlider.addOnPageChangeListener(object : CustomSliderView.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                Toast.makeText(QApp.ctx, "1", Toast.LENGTH_SHORT).show()
-            }
+
+        imageSlider.sliderPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                Toast.makeText(QApp.ctx, "2", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                Toast.makeText(QApp.ctx, "3", Toast.LENGTH_SHORT).show()
+                if (position == imageSlider.sliderAdapter.count - 1) {
+                    floatingActionButton.show()
+                } else
+                    floatingActionButton.hide()
             }
 
         })
