@@ -2,12 +2,15 @@ package com.example.travelo.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.Menu
@@ -26,6 +29,7 @@ import com.example.travelo.BaseActivity
 import com.example.travelo.QApp
 import com.example.travelo.R
 import com.example.travelo.auth.SignInActivity
+import com.example.travelo.database.DatabaseUtils
 import com.example.travelo.directionHelpers.FetchURL
 import com.example.travelo.directionHelpers.TaskLoadedCallback
 import com.example.travelo.lib.ViewAnimation
@@ -67,6 +71,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private var rotate = false
     private lateinit var lyt_mic: View
     private lateinit var lyt_call: View
+    private val REQUEST_IMAGE_CAPTURE = 1
+    private val REQUEST_PICK_IMAGE = 2
+    private lateinit var markerId: String
+    private var images = arrayListOf<Any>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,7 +155,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
 
     override fun onMarkerClick(marker: Marker?): Boolean {
-        val markerId = marker?.tag.toString()
+        fab_add.hide()
+        fab_confirm.hide()
+        markerId = marker?.tag.toString()
         val markerListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val route = dataSnapshot.child("routes").child(markerId).getValue(Route::class.java)!!
@@ -180,8 +190,14 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         //    QApp.fStorage.reference.child("image/"+markerId+"/"+ UUID.randomUUID().toString()).putFile(Uri.parse("android.resource://com.example.trasex/" + R.drawable.header_background_green))
         //uploadTask.addOnFailureListener { Toast.makeText(this, "Nie udało się", Toast.LENGTH_SHORT).show() }
         //    .addOnSuccessListener { Toast.makeText(this, "Udało się", Toast.LENGTH_SHORT).show() }
-        val images: ArrayList<Any> = arrayListOf(R.drawable.add_photo)
-        imageSlider.sliderAdapter = SliderAdapter(this, markerId, images)
+        loadImages()
+
+        return true
+    }
+
+    private fun loadImages() {
+        images = arrayListOf(R.drawable.add_photo)
+        imageSlider.sliderAdapter = SliderAdapter(this, images)
         QApp.fStorage.reference.child("image/" + markerId).listAll()
             .addOnSuccessListener { results ->
                 results.items.forEach { item ->
@@ -189,13 +205,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                         images.add(0, uri)
                         imageSlider.sliderAdapter.notifyDataSetChanged()
                     }).addOnSuccessListener {
-                        imageSlider.sliderAdapter = SliderAdapter(this, markerId, images)
+                        imageSlider.sliderAdapter = SliderAdapter(this, images)
                         imageSlider.sliderAdapter.notifyDataSetChanged()
                     }
                 }
             }.addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }
-
-        return true
     }
 
     private fun toggleFabMode(v: View?) {
@@ -435,9 +449,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
             }
         })
-        //QApp.fStorage.reference.child("image/png").downloadUrl.addOnSuccessListener { p0 -> images.add(Pair("", p0)) }
-        //    .addOnFailureListener { Toast.makeText(this, "Nie udało się", Toast.LENGTH_SHORT).show() }
-        //
 
         imageSlider.setIndicatorAnimation(IndicatorAnimations.DROP)
         imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
@@ -461,6 +472,55 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         ViewAnimation.initShowOut(lyt_call)
 
         fab_add.setOnClickListener { view -> toggleFabMode(view) }
+        fab_add_with_camera.setOnClickListener {
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (takePictureIntent.resolveActivity(packageManager) != null)
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+        }
+        fab_add_from_gallery.setOnClickListener {
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(Intent.createChooser(intent, "Wybierz zdjęcie"), REQUEST_PICK_IMAGE)
+
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_PICK_IMAGE && resultCode == Activity.RESULT_OK) {
+            toggleFabMode(fab_add)
+            fab_add.hide()
+            fab_confirm.show()
+            images[images.lastIndex] = data?.data!!
+            imageSlider.sliderAdapter = SliderAdapter(this, images)
+            imageSlider.sliderAdapter.notifyDataSetChanged()
+            imageSlider.currentPagePosition = imageSlider.sliderAdapter.count - 1
+            fab_confirm.setOnClickListener {
+                DatabaseUtils.addImageToStorage(markerId, data.data.toString()).addOnSuccessListener {
+                    Toast.makeText(this, "Dodano nowe zdjęcie", Toast.LENGTH_SHORT).show()
+                    loadImages()
+                    fab_confirm.hide()
+                }
+            }
+
+        }
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            toggleFabMode(fab_add)
+            fab_add.hide()
+            fab_confirm.show()
+            images[images.lastIndex] = data?.extras?.get("data")!!
+            imageSlider.sliderAdapter = SliderAdapter(this, images)
+            imageSlider.sliderAdapter.notifyDataSetChanged()
+            imageSlider.currentPagePosition = imageSlider.sliderAdapter.count - 1
+            fab_confirm.setOnClickListener {
+                DatabaseUtils.addImageToStorage(markerId, data.extras!!.get("data") as Bitmap).addOnSuccessListener {
+                    Toast.makeText(this, "Dodano nowe zdjęcie", Toast.LENGTH_SHORT).show()
+                    loadImages()
+                    fab_confirm.hide()
+                }
+            }
+        }
     }
 
     //endregion

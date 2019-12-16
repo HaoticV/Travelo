@@ -17,11 +17,11 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapter
     private String markerId;
     private Context context;
     private List images;
+    ImageView imageViewBackground;
 
-    public SliderAdapter(Context context, String markerId ,List images) {
+    public SliderAdapter(Context context, List images) {
         this.context = context;
         this.images = images;
-        this.markerId = markerId;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapter
         return images.size();
     }
 
-    class SliderAdapterVH extends SliderViewAdapter.ViewHolder {
+    public class SliderAdapterVH extends SliderViewAdapter.ViewHolder {
 
         View itemView;
         ImageView imageViewBackground;
