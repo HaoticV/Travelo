@@ -1,4 +1,4 @@
-package com.example.travelo.Map
+package com.example.travelo.map
 
 import android.Manifest
 import android.content.Context
@@ -20,13 +20,13 @@ import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
-import com.example.travelo.Auth.SignInActivity
 import com.example.travelo.BaseActivity
-import com.example.travelo.Directionhelpers.FetchURL
-import com.example.travelo.Directionhelpers.TaskLoadedCallback
-import com.example.travelo.Models.Route
 import com.example.travelo.QApp
 import com.example.travelo.R
+import com.example.travelo.auth.SignInActivity
+import com.example.travelo.directionHelpers.FetchURL
+import com.example.travelo.directionHelpers.TaskLoadedCallback
+import com.example.travelo.models.Route
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -185,8 +185,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                     }
                 }
             }.addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }
-
-
 
         imageSlider.setIndicatorAnimation(IndicatorAnimations.DROP)
         imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)

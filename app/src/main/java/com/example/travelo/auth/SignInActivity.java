@@ -1,4 +1,4 @@
-package com.example.travelo.Auth;
+package com.example.travelo.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,8 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.travelo.BaseActivity;
-import com.example.travelo.Map.MapsActivity;
 import com.example.travelo.R;
+import com.example.travelo.map.MapsActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;

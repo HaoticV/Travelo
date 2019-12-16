@@ -1,4 +1,4 @@
-package com.example.travelo.Auth;
+package com.example.travelo.auth;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,8 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.travelo.Database.User;
 import com.example.travelo.R;
+import com.example.travelo.database.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;

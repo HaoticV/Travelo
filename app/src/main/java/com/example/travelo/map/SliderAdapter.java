@@ -1,4 +1,4 @@
-package com.example.travelo.Map;
+package com.example.travelo.map;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.example.travelo.Database.DatabaseUtils;
 import com.example.travelo.R;
+import com.example.travelo.database.DatabaseUtils;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
 import java.util.List;

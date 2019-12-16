@@ -1,4 +1,4 @@
-package com.example.travelo.Directionhelpers;
+package com.example.travelo.directionHelpers;
 
 import android.content.Context;
 import android.os.AsyncTask;

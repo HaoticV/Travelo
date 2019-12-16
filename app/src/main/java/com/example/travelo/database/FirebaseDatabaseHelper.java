@@ -1,4 +1,4 @@
-package com.example.travelo.Database;
+package com.example.travelo.database;
 
 import androidx.annotation.NonNull;
 

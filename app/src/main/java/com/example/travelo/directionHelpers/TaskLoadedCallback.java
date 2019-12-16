@@ -1,4 +1,4 @@
-package com.example.travelo.Directionhelpers;
+package com.example.travelo.directionHelpers;
 
 public interface TaskLoadedCallback {
     void onTaskDone(Object... values);
