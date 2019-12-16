@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
-import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -35,7 +34,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
@@ -173,25 +171,21 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         //    QApp.fStorage.reference.child("image/"+markerId+"/"+ UUID.randomUUID().toString()).putFile(Uri.parse("android.resource://com.example.trasex/" + R.drawable.header_background_green))
         //uploadTask.addOnFailureListener { Toast.makeText(this, "Nie udało się", Toast.LENGTH_SHORT).show() }
         //    .addOnSuccessListener { Toast.makeText(this, "Udało się", Toast.LENGTH_SHORT).show() }
-        var images: ArrayList<Uri> = arrayListOf()
+        val images: ArrayList<Any> = arrayListOf(R.drawable.add_photo)
+        imageSlider.sliderAdapter = SliderAdapter(this, markerId, images)
         QApp.fStorage.reference.child("image/" + markerId).listAll()
             .addOnSuccessListener { results ->
                 results.items.forEach { item ->
                     Tasks.whenAllComplete(item.downloadUrl.addOnSuccessListener { uri ->
-                        images.add(uri)
+                        images.add(0, uri)
+                        imageSlider.sliderAdapter.notifyDataSetChanged()
                     }).addOnSuccessListener {
-                        if (images.size != 0) {
-                            imageSlider.sliderAdapter = SliderAdapter(this, markerId, images)
-                            imageSlider.sliderAdapter.notifyDataSetChanged()
-                            images = arrayListOf()
-                        }
+                        imageSlider.sliderAdapter = SliderAdapter(this, markerId, images)
+                        imageSlider.sliderAdapter.notifyDataSetChanged()
                     }
                 }
-            }
-            .addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }.addOnSuccessListener {
-                imageSlider.sliderAdapter = SliderAdapter(this, markerId, images)
-                images = arrayListOf()
-            }
+            }.addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }
+
 
 
         imageSlider.setIndicatorAnimation(IndicatorAnimations.DROP)

@@ -21,7 +21,6 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapter
 
     public SliderAdapter(Context context, String markerId ,List images) {
         this.context = context;
-        images.add(R.drawable.add_photo);
         this.images = images;
         this.markerId = markerId;
     }
