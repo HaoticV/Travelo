@@ -213,7 +213,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             }.addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }
     }
 
-    private fun toggleFabMode(v: View?) {
+    private fun toggleFabMode(v: View) {
         rotate = ViewAnimation.rotateFab(v, !rotate)
         if (rotate) {
             ViewAnimation.showIn(lyt_mic)
