@@ -34,7 +34,6 @@ import com.example.travelo.directionHelpers.FetchURL
 import com.example.travelo.directionHelpers.TaskLoadedCallback
 import com.example.travelo.lib.ViewAnimation
 import com.example.travelo.models.Route
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -206,13 +205,16 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     }
 
     private fun toggleFabMode(v: View) {
+        val fromGalleryLayout: View = findViewById(R.id.lyt_mic)
+        val fromCameraLayout: View = findViewById(R.id.lyt_call)
+
         rotate = ViewAnimation.rotateFab(v, !rotate)
         if (rotate) {
-            ViewAnimation.showIn(findViewById(R.id.lyt_mic))
-            ViewAnimation.showIn(findViewById(R.id.lyt_call))
+            ViewAnimation.showIn(fromGalleryLayout)
+            ViewAnimation.showIn(fromCameraLayout)
         } else {
-            ViewAnimation.showOut(findViewById(R.id.lyt_mic))
-            ViewAnimation.showOut(findViewById(R.id.lyt_call))
+            ViewAnimation.showOut(fromGalleryLayout)
+            ViewAnimation.showOut(fromCameraLayout)
         }
     }
 
