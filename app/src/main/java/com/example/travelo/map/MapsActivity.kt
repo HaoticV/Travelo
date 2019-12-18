@@ -61,20 +61,17 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     private val PERMISSION_ID: Int = 42
     private val REQUEST_IMAGE_CAPTURE = 1
+    private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
     private val REQUEST_PICK_IMAGE = 2
 
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: MapView
-    private lateinit var mFusedLocationClient: FusedLocationProviderClient
-    private var mLocationPermissionGranted: Boolean = false
-    private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
     private lateinit var currentPolyline: Polyline
     private lateinit var mLocation: LatLng
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
-    private var rotate = false
-    private lateinit var lyt_mic: View
-    private lateinit var lyt_call: View
     private lateinit var markerId: String
+    private var mLocationPermissionGranted: Boolean = false
+    private var rotate = false
     private var images = arrayListOf<Any>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +89,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         mapView.getMapAsync(this)
 
         enableLocalization()
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mFusedLocationClient.lastLocation.addOnSuccessListener { mLocation = LatLng(it.latitude, it.longitude) }
         updateUILayer()
         initToolbar()
@@ -186,11 +183,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         QApp.fData.reference.addListenerForSingleValueEvent(markerListener)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         mMap.setPadding(0, 0, 0, 200)
-
-        //val uploadTask =
-        //    QApp.fStorage.reference.child("image/"+markerId+"/"+ UUID.randomUUID().toString()).putFile(Uri.parse("android.resource://com.example.trasex/" + R.drawable.header_background_green))
-        //uploadTask.addOnFailureListener { Toast.makeText(this, "Nie udało się", Toast.LENGTH_SHORT).show() }
-        //    .addOnSuccessListener { Toast.makeText(this, "Udało się", Toast.LENGTH_SHORT).show() }
         loadImages()
 
         return true
@@ -216,8 +208,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private fun toggleFabMode(v: View) {
         rotate = ViewAnimation.rotateFab(v, !rotate)
         if (rotate) {
-            ViewAnimation.showIn(lyt_mic)
-            ViewAnimation.showIn(lyt_call)
+            ViewAnimation.showIn(findViewById(R.id.lyt_mic))
+            ViewAnimation.showIn(findViewById(R.id.lyt_call))
         } else {
             ViewAnimation.showOut(findViewById(R.id.lyt_mic))
             ViewAnimation.showOut(findViewById(R.id.lyt_call))
@@ -467,10 +459,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             }
         })
 
-        lyt_mic = findViewById(R.id.lyt_mic)
-        lyt_call = findViewById(R.id.lyt_call)
-        ViewAnimation.initShowOut(lyt_mic)
-        ViewAnimation.initShowOut(lyt_call)
+        ViewAnimation.initShowOut(findViewById(R.id.lyt_mic))
+        ViewAnimation.initShowOut(findViewById(R.id.lyt_call))
 
         fab_add.setOnClickListener { view -> toggleFabMode(view) }
         fab_add_with_camera.setOnClickListener {
