@@ -34,6 +34,7 @@ import com.example.travelo.directionHelpers.FetchURL
 import com.example.travelo.directionHelpers.TaskLoadedCallback
 import com.example.travelo.lib.ViewAnimation
 import com.example.travelo.models.Route
+import com.example.travelo.profile.ProfileActivity
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -339,6 +340,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             true
         }
 
+        header.navigation_user_name.text = QApp.fUser?.email
+
         val seekBarSearchRadius: CrystalSeekbar = header.seekbar_search_radius
         seekBarSearchRadius.setOnSeekbarChangeListener { minValue -> header.search_radius.text = minValue.toString() + "km" }
 
@@ -422,6 +425,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         header.search_button.setOnClickListener {
             QApp.fData.reference.addListenerForSingleValueEvent(eventListener)
             drawer.closeDrawers()
+        }
+        header.profile_header.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
     }
 

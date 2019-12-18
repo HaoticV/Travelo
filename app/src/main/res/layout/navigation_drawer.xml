@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_header"
         android:layout_width="match_parent"
         android:layout_height="172dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark">
@@ -33,6 +34,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/navigation_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/avatar"
@@ -43,7 +45,7 @@
             android:layout_margin="@dimen/spacing_large"
             android:text="John Miller"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textSize="24sp"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/avatar" />
