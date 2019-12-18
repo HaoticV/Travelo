@@ -92,9 +92,9 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="wrap_content"
+                            android:layout_width="75dp"
                             android:layout_height="?attr/actionBarSize"
-                            app:srcCompat="@drawable/ic_distance" />
+                            app:srcCompat="@drawable/ic_sheet_map_route" />
 
                         <TextView
                             android:id="@+id/route_distance"
@@ -118,7 +118,7 @@
                         <ImageView
                             android:layout_width="?attr/actionBarSize"
                             android:layout_height="?attr/actionBarSize"
-                            app:srcCompat="@drawable/ic_time" />
+                            app:srcCompat="@drawable/ic_sheet_map_stopwatch" />
 
                         <TextView
                             android:id="@+id/route_time"
