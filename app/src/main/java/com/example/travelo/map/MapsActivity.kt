@@ -198,7 +198,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     private fun loadImages() {
         images = arrayListOf(R.drawable.add_photo)
-        imageSlider.sliderAdapter = SliderAdapter(this, images)
+        imageSlider.sliderAdapter = SliderAdapter(images)
         QApp.fStorage.reference.child("image/" + markerId).listAll()
             .addOnSuccessListener { results ->
                 results.items.forEach { item ->
@@ -206,7 +206,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                         images.add(0, uri)
                         imageSlider.sliderAdapter.notifyDataSetChanged()
                     }).addOnSuccessListener {
-                        imageSlider.sliderAdapter = SliderAdapter(this, images)
+                        imageSlider.sliderAdapter = SliderAdapter(images)
                         imageSlider.sliderAdapter.notifyDataSetChanged()
                     }
                 }
@@ -494,7 +494,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             fab_add.hide()
             fab_confirm.show()
             images[images.lastIndex] = data?.data!!
-            imageSlider.sliderAdapter = SliderAdapter(this, images)
+            imageSlider.sliderAdapter = SliderAdapter(images)
             imageSlider.sliderAdapter.notifyDataSetChanged()
             imageSlider.currentPagePosition = imageSlider.sliderAdapter.count - 1
             fab_confirm.setOnClickListener {
@@ -511,7 +511,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             fab_add.hide()
             fab_confirm.show()
             images[images.lastIndex] = data?.extras?.get("data")!!
-            imageSlider.sliderAdapter = SliderAdapter(this, images)
+            imageSlider.sliderAdapter = SliderAdapter(images)
             imageSlider.sliderAdapter.notifyDataSetChanged()
             imageSlider.currentPagePosition = imageSlider.sliderAdapter.count - 1
             fab_confirm.setOnClickListener {
