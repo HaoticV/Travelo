@@ -60,6 +60,9 @@ import kotlinx.android.synthetic.main.sheet_map.*
 class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, TaskLoadedCallback {
 
     private val PERMISSION_ID: Int = 42
+    private val REQUEST_IMAGE_CAPTURE = 1
+    private val REQUEST_PICK_IMAGE = 2
+
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: MapView
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -71,8 +74,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private var rotate = false
     private lateinit var lyt_mic: View
     private lateinit var lyt_call: View
-    private val REQUEST_IMAGE_CAPTURE = 1
-    private val REQUEST_PICK_IMAGE = 2
     private lateinit var markerId: String
     private var images = arrayListOf<Any>()
 
