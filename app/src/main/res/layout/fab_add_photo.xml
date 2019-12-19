@@ -116,7 +116,7 @@
             android:layout_marginBottom="@dimen/spacing_smlarge"
             android:clickable="true"
             android:tint="@android:color/white"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:backgroundTint="@color/colorPrimary"
             app:fabSize="normal"
             app:rippleColor="@android:color/white"

@@ -22,7 +22,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.viewpager.widget.ViewPager
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
 import com.example.travelo.BaseActivity
@@ -49,8 +48,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.smarteist.autoimageslider.IndicatorAnimations
 import com.smarteist.autoimageslider.SliderAnimations
-import com.smarteist.autoimageslider.SliderPager
-import com.smarteist.autoimageslider.SliderView
 import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.fab_add_photo.*
 import kotlinx.android.synthetic.main.navigation_drawer.view.*
@@ -153,7 +150,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
 
     override fun onMarkerClick(marker: Marker?): Boolean {
-        fab_add.hide()
         fab_confirm.hide()
         markerId = marker?.tag.toString()
         val markerListener = object : ValueEventListener {
@@ -189,7 +185,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     }
 
     private fun loadImages() {
-        images = arrayListOf(R.drawable.add_photo)
+        images = arrayListOf()
         imageSlider.sliderAdapter = SliderAdapter(images)
         QApp.fStorage.reference.child("image/" + markerId).listAll()
             .addOnSuccessListener { results ->
@@ -454,19 +450,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         imageSlider.setIndicatorAnimation(IndicatorAnimations.DROP)
         imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
 
-        imageSlider.getSliderPager().addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                if (position == imageSlider.sliderAdapter.count - 1) {
-                    fab_add.show()
-                } else
-                    fab_add.hide()
-            }
-        })
-
         ViewAnimation.initShowOut(findViewById(R.id.lyt_mic))
         ViewAnimation.initShowOut(findViewById(R.id.lyt_call))
 
@@ -491,7 +474,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             toggleFabMode(fab_add)
             fab_add.hide()
             fab_confirm.show()
-            images[images.lastIndex] = data?.data!!
+            images = arrayListOf(images, data?.data!!)
             imageSlider.sliderAdapter = SliderAdapter(images)
             imageSlider.sliderAdapter.notifyDataSetChanged()
             imageSlider.currentPagePosition = imageSlider.sliderAdapter.count - 1
@@ -500,6 +483,12 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                     Toast.makeText(this, "Dodano nowe zdjęcie", Toast.LENGTH_SHORT).show()
                     loadImages()
                     fab_confirm.hide()
+                    fab_add.show()
+                    it.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
+                        QApp.fData.reference.child("routes").child(markerId).child("images").push().setValue(uri.toString()).addOnSuccessListener {
+                            Log.d("uri", uri.toString())
+                        }
+                    }
                 }
             }
 
@@ -572,12 +561,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
-    }
-
-    private fun SliderView.getSliderPager(): SliderPager {
-        val field = javaClass.getDeclaredField("mSliderPager")
-        field.isAccessible = true
-        return field.get(this) as SliderPager
     }
 
     //endregion
