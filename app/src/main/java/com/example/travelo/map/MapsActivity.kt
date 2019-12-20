@@ -40,16 +40,16 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
-import com.google.android.gms.tasks.Tasks
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.UploadTask
 import com.smarteist.autoimageslider.IndicatorAnimations
 import com.smarteist.autoimageslider.SliderAnimations
 import kotlinx.android.synthetic.main.activity_map.*
-import kotlinx.android.synthetic.main.fab_add_photo.*
+import kotlinx.android.synthetic.main.add_photo_buttons.*
 import kotlinx.android.synthetic.main.navigation_drawer.view.*
 import kotlinx.android.synthetic.main.sheet_map.*
 
@@ -151,6 +151,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     override fun onMarkerClick(marker: Marker?): Boolean {
         fab_confirm.hide()
+        fab_add.show()
         markerId = marker?.tag.toString()
         val markerListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -180,25 +181,24 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         mMap.setPadding(0, 0, 0, 200)
         loadImages()
-
         return true
     }
 
     private fun loadImages() {
-        images = arrayListOf()
         imageSlider.sliderAdapter = SliderAdapter(images)
-        QApp.fStorage.reference.child("image/" + markerId).listAll()
-            .addOnSuccessListener { results ->
-                results.items.forEach { item ->
-                    Tasks.whenAllComplete(item.downloadUrl.addOnSuccessListener { uri ->
-                        images.add(0, uri)
-                        imageSlider.sliderAdapter.notifyDataSetChanged()
-                    }).addOnSuccessListener {
-                        imageSlider.sliderAdapter = SliderAdapter(images)
-                        imageSlider.sliderAdapter.notifyDataSetChanged()
-                    }
-                }
-            }.addOnFailureListener { Toast.makeText(this, "nie udało się", Toast.LENGTH_SHORT).show() }
+        val imagesListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                images = arrayListOf()
+                dataSnapshot.child("routes").child(markerId).child("images").children.forEach { images.add(it.value!!) }
+                imageSlider.sliderAdapter = SliderAdapter(images)
+                imageSlider.sliderAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(dataSnapshot: DatabaseError) {
+                Toast.makeText(this@MapsActivity, "Wystąpił błąd podczas pobierania zdjęć", Toast.LENGTH_SHORT).show()
+            }
+        }
+        QApp.fData.reference.addValueEventListener(imagesListener)
     }
 
     private fun toggleFabMode(v: View) {
@@ -474,21 +474,15 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             toggleFabMode(fab_add)
             fab_add.hide()
             fab_confirm.show()
-            images = arrayListOf(images, data?.data!!)
+            images.add(data?.data!!)
             imageSlider.sliderAdapter = SliderAdapter(images)
             imageSlider.sliderAdapter.notifyDataSetChanged()
             imageSlider.currentPagePosition = imageSlider.sliderAdapter.count - 1
             fab_confirm.setOnClickListener {
+                fab_confirm.hide()
+                progressBar.visibility = View.VISIBLE
                 DatabaseUtils.addImageToStorage(markerId, data.data.toString()).addOnSuccessListener {
-                    Toast.makeText(this, "Dodano nowe zdjęcie", Toast.LENGTH_SHORT).show()
-                    loadImages()
-                    fab_confirm.hide()
-                    fab_add.show()
-                    it.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
-                        QApp.fData.reference.child("routes").child(markerId).child("images").push().setValue(uri.toString()).addOnSuccessListener {
-                            Log.d("uri", uri.toString())
-                        }
-                    }
+                    addPhotoProcess(it)
                 }
             }
 
@@ -497,18 +491,30 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             toggleFabMode(fab_add)
             fab_add.hide()
             fab_confirm.show()
-            images[images.lastIndex] = data?.extras?.get("data")!!
+            images.add(data?.extras?.get("data")!!)
             imageSlider.sliderAdapter = SliderAdapter(images)
             imageSlider.sliderAdapter.notifyDataSetChanged()
             imageSlider.currentPagePosition = imageSlider.sliderAdapter.count - 1
             fab_confirm.setOnClickListener {
+                fab_confirm.hide()
+                progressBar.visibility = View.VISIBLE
                 DatabaseUtils.addImageToStorage(markerId, data.extras!!.get("data") as Bitmap).addOnSuccessListener {
-                    Toast.makeText(this, "Dodano nowe zdjęcie", Toast.LENGTH_SHORT).show()
-                    loadImages()
-                    fab_confirm.hide()
+                    addPhotoProcess(it)
                 }
             }
         }
+    }
+
+    private fun addPhotoProcess(uploadTask: UploadTask.TaskSnapshot) {
+        uploadTask.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
+            QApp.fData.reference.child("routes").child(markerId).child("images").push().setValue(uri.toString()).addOnSuccessListener {
+                Log.d("uri", uri.toString())
+                Toast.makeText(this, "Dodano nowe zdjęcie", Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
+                fab_add.show()
+            }
+        }
+
     }
 
     //endregion

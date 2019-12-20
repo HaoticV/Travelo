@@ -13,4 +13,6 @@ data class Route(
     var distance: Long = 0,
     var distanceText: String = "",
     var time: Long = 0,
-    var timeText: String = "") : Serializable
+    var timeText: String = "",
+    val images: HashMap<String, String> = hashMapOf()
+) : Serializable

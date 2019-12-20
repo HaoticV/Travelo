@@ -157,7 +157,7 @@
 
                 </com.smarteist.autoimageslider.SliderView>
 
-                <include layout="@layout/fab_add_photo" />
+                <include layout="@layout/add_photo_buttons" />
 
             </FrameLayout>
 
