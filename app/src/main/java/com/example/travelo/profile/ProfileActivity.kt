@@ -35,7 +35,6 @@ class ProfileActivity : BaseActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 dataSnapshot.child("routes").children.forEach {
                     val item = it.getValue(Route::class.java)
-                    items.add(item!!)
                 }
                 recyclerView.adapter = RouteRecyclerViewAdapter(applicationContext, items)
             }
