@@ -119,12 +119,12 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
                 for (item in hashMap) {
                     when (item.value.first) {
-                        "road" -> googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_road)).position(item.value.second))
+                        "road" -> googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_cyclist_road)).position(item.value.second))
                             .tag = item.key
-                        "city" -> googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_city)).position(item.value.second))
+                        "city" -> googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_cyclist_city)).position(item.value.second))
                             .tag = item.key
                         "mountain" -> googleMap.addMarker(
-                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_mountain)).position(
+                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_cyclist_mountain)).position(
                                 item.value.second
                             )
                         ).tag = item.key
@@ -385,7 +385,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 for (item in filteredListRadius) {
                     when (item.child("type").value) {
                         "road" -> mMap.addMarker(
-                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_road)).position(
+                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_cyclist_road)).position(
                                 LatLng(
                                     item.child("origin").child("latitude").value.toString().toDouble(),
                                     item.child("origin").child("longitude").value.toString().toDouble()
@@ -394,7 +394,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                         )
                             .tag = item.key
                         "city" -> mMap.addMarker(
-                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_city)).position(
+                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_cyclist_city)).position(
                                 LatLng(
                                     item.child("origin").child("latitude").value.toString().toDouble(),
                                     item.child("origin").child("longitude").value.toString().toDouble()
@@ -403,7 +403,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                         )
                             .tag = item.key
                         "mountain" -> mMap.addMarker(
-                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_mountain)).position(
+                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_cyclist_mountain)).position(
                                 LatLng(
                                     item.child("origin").child("latitude").value.toString().toDouble(),
                                     item.child("origin").child("longitude").value.toString().toDouble()

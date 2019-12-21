@@ -38,16 +38,15 @@
             android:id="@+id/fab_add_from_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_smlarge"
+            android:layout_marginLeft="@dimen/spacing_medium"
             android:layout_marginTop="@dimen/spacing_middle"
             android:layout_marginRight="@dimen/spacing_smlarge"
             android:layout_marginBottom="@dimen/spacing_middle"
             android:clickable="true"
-            android:tint="@color/grey_80"
             app:backgroundTint="@android:color/white"
             app:fabSize="mini"
             app:rippleColor="@android:color/black"
-            app:srcCompat="@drawable/ic_mic" />
+            app:srcCompat="@drawable/ic_add_photo_gallery" />
 
         <View
             android:layout_width="@dimen/spacing_xmedium"
@@ -85,16 +84,15 @@
             android:id="@+id/fab_add_with_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_smlarge"
+            android:layout_marginLeft="@dimen/spacing_medium"
             android:layout_marginTop="@dimen/spacing_middle"
             android:layout_marginRight="@dimen/spacing_smlarge"
             android:layout_marginBottom="@dimen/spacing_middle"
             android:clickable="true"
-            android:tint="@color/grey_80"
             app:backgroundTint="@android:color/white"
             app:fabSize="mini"
             app:rippleColor="@android:color/black"
-            app:srcCompat="@drawable/ic_call" />
+            app:srcCompat="@drawable/ic_add_photo_camera" />
 
         <View
             android:layout_width="@dimen/spacing_xmedium"
