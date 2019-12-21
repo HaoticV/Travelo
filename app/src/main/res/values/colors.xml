@@ -7,6 +7,7 @@
     <color name="colorAccent">#448AFF</color>
     <color name="colorAccentDark">#4164d7</color>
     <color name="colorAccentLight">#6db8ff</color>
+    <color name="colorDefaultBackground">#FAFAFA</color>
 
     <color name="overlay_dark_10">#1A000000</color>
     <color name="overlay_dark_20">#33000000</color>

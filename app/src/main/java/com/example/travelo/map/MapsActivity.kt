@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -121,7 +122,18 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                     when (item.value.first) {
                         "road" -> googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_road)).position(item.value.second))
                             .tag = item.key
-                        "city" -> googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_city)).position(item.value.second))
+                        "city" -> googleMap.addMarker(
+                            MarkerOptions().icon(
+                                BitmapDescriptorFactory.fromBitmap(
+                                    Bitmap.createScaledBitmap(
+                                        BitmapFactory.decodeResource(
+                                            resources,
+                                            R.drawable.new_city
+                                        ), 100, 150, false
+                                    )
+                                )
+                            ).position(item.value.second)
+                        )
                             .tag = item.key
                         "mountain" -> googleMap.addMarker(
                             MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_mountain)).position(
@@ -294,10 +306,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     private fun initToolbar() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
-        toolbar.setNavigationIcon(R.drawable.ic_menu)
         setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.app_name)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeButtonEnabled(true)
+        supportActionBar!!.title = getString(R.string.app_name)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -334,6 +346,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
             }
         drawer.addDrawerListener(toggle)
+        toggle.syncState()
         navigationView.setNavigationItemSelectedListener {
             true
         }
