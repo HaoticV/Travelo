@@ -152,6 +152,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     override fun onMarkerClick(marker: Marker?): Boolean {
         fab_confirm.hide()
         fab_add.show()
+        rotate = true
+        toggleFabMode(fab_add)
         markerId = marker?.tag.toString()
         val markerListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
