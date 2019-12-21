@@ -71,8 +71,6 @@
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="-4dp"
-            android:layout_marginRight="-4dp"
             android:inputType="textEmailAddress"
             android:maxLength="50"
             android:maxLines="1"
@@ -96,8 +94,6 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="-4dp"
-            android:layout_marginRight="-4dp"
             android:inputType="textPassword"
             android:maxLength="50"
             android:maxLines="1"
@@ -114,8 +110,6 @@
             android:id="@+id/signInButton"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:layout_marginLeft="-4dp"
-            android:layout_marginRight="-4dp"
             android:background="@drawable/btn_rounded_green_400"
             android:text="LOGOWANIE"
             android:textAllCaps="false"
@@ -144,6 +138,12 @@
 
 
         </LinearLayout>
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/googleSignInButton"
+            android:layout_margin="@dimen/spacing_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
