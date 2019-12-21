@@ -95,6 +95,19 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         initBottomSheet()
     }
 
+    private fun drawMarker(drawable: Int): MarkerOptions {
+        return MarkerOptions().icon(
+            BitmapDescriptorFactory.fromBitmap(
+                Bitmap.createScaledBitmap(
+                    BitmapFactory.decodeResource(
+                        resources,
+                        drawable
+                    ), 100, 150, false
+                )
+            )
+        )
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         val boundsPoland = LatLngBounds(LatLng(48.844458, 13.914181), LatLng(54.972622, 23.583997))
@@ -120,23 +133,14 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
                 for (item in hashMap) {
                     when (item.value.first) {
-                        "road" -> googleMap.addMarker(MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_road)).position(item.value.second))
+                        "road" -> googleMap.addMarker(drawMarker(R.drawable.marker_road).position(item.value.second))
                             .tag = item.key
                         "city" -> googleMap.addMarker(
-                            MarkerOptions().icon(
-                                BitmapDescriptorFactory.fromBitmap(
-                                    Bitmap.createScaledBitmap(
-                                        BitmapFactory.decodeResource(
-                                            resources,
-                                            R.drawable.new_city
-                                        ), 100, 150, false
-                                    )
-                                )
-                            ).position(item.value.second)
+                            drawMarker(R.drawable.marker_city).position(item.value.second)
                         )
                             .tag = item.key
                         "mountain" -> googleMap.addMarker(
-                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_mountain)).position(
+                            drawMarker(R.drawable.marker_mountain).position(
                                 item.value.second
                             )
                         ).tag = item.key
@@ -400,7 +404,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 for (item in filteredListRadius) {
                     when (item.child("type").value) {
                         "road" -> mMap.addMarker(
-                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_road)).position(
+                            drawMarker(R.drawable.marker_road).position(
                                 LatLng(
                                     item.child("origin").child("latitude").value.toString().toDouble(),
                                     item.child("origin").child("longitude").value.toString().toDouble()
@@ -409,7 +413,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                         )
                             .tag = item.key
                         "city" -> mMap.addMarker(
-                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_city)).position(
+                            drawMarker(R.drawable.marker_city).position(
                                 LatLng(
                                     item.child("origin").child("latitude").value.toString().toDouble(),
                                     item.child("origin").child("longitude").value.toString().toDouble()
@@ -418,7 +422,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                         )
                             .tag = item.key
                         "mountain" -> mMap.addMarker(
-                            MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_mountain)).position(
+                            drawMarker(R.drawable.marker_mountain).position(
                                 LatLng(
                                     item.child("origin").child("latitude").value.toString().toDouble(),
                                     item.child("origin").child("longitude").value.toString().toDouble()
