@@ -31,8 +31,7 @@ class ProfileActivityNew : BaseActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         setSupportActionBar(toolbar)
-        supportActionBar?.title = "Profil"
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        collapsing_toolbar.title = QApp.fUser?.email
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
