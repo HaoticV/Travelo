@@ -3,8 +3,7 @@ package com.example.travelo.profile
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,13 +15,14 @@ import com.example.travelo.models.Route
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.jaeger.library.StatusBarUtil
 import kotlinx.android.synthetic.main.activity_profile_toolbar_collapse.*
 
 class ProfileActivityNew : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(R.style.TransparentStatusBar)
         setContentView(R.layout.activity_profile_toolbar_collapse)
+        StatusBarUtil.setTransparent(this)
         initToolbar()
         profile_collapsing_routes_fab.setOnClickListener { initRoutesRecyclerView() }
     }

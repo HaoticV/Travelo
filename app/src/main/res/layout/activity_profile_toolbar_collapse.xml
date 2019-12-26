@@ -9,17 +9,17 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:elevation="0dp">
+        app:elevation="0dp"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:fitsSystemWindows="true"
             app:expandedTitleGravity="center_horizontal"
             app:expandedTitleMarginTop="220dp"
+            android:fitsSystemWindows="true"
             app:title="Profil"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
@@ -27,7 +27,8 @@
 
             <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true">
 
 
                 <ImageView
@@ -154,7 +155,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/circle_image_view"
         android:layout_width="120dp"
         android:layout_height="120dp"
