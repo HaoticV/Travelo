@@ -50,7 +50,7 @@
         <activity android:name="com.example.travelo.auth.SignInActivity" />
         <activity android:name="com.example.travelo.auth.SignUpActivity" />
         <activity
-            android:name="com.example.travelo.profile.ProfileActivityNew"/>
+            android:name="com.example.travelo.profile.ProfileActivity"/>
     </application>
 
 </manifest>

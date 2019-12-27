@@ -18,7 +18,7 @@ import com.google.firebase.database.ValueEventListener
 import com.jaeger.library.StatusBarUtil
 import kotlinx.android.synthetic.main.activity_profile_toolbar_collapse.*
 
-class ProfileActivityNew : BaseActivity() {
+class ProfileActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_toolbar_collapse)
@@ -51,11 +51,11 @@ class ProfileActivityNew : BaseActivity() {
                     val item = it.getValue(Route::class.java)
                     items.add(item!!)
                 }
-                recyclerView.adapter = RouteRecyclerViewAdapter(this@ProfileActivityNew, items)
+                recyclerView.adapter = RouteRecyclerViewAdapter(this@ProfileActivity, items)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.w(this@ProfileActivityNew.toString(), "loadPost:onCancelled", databaseError.toException())
+                Log.w(this@ProfileActivity.toString(), "loadPost:onCancelled", databaseError.toException())
             }
         }
 

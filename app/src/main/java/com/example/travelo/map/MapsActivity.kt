@@ -34,7 +34,7 @@ import com.example.travelo.directionHelpers.FetchURL
 import com.example.travelo.directionHelpers.TaskLoadedCallback
 import com.example.travelo.lib.ViewAnimation
 import com.example.travelo.models.Route
-import com.example.travelo.profile.ProfileActivityNew
+import com.example.travelo.profile.ProfileActivity
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -442,7 +442,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             drawer.closeDrawers()
         }
         header.profile_header.setOnClickListener {
-            startActivity(Intent(this, ProfileActivityNew::class.java))
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
     }
 
