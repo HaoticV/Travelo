@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -47,25 +48,25 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:contentInsetStartWithNavigation="0dp"
                 android:layout_gravity="center_horizontal"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
                 <Space
                     android:id="@+id/circle_collapsed_target"
-                    android:layout_marginRight="@dimen/spacing_small"
                     android:layout_width="40dp"
-                    android:layout_height="40dp" />
+                    android:layout_height="40dp"
+                    android:layout_marginRight="@dimen/spacing_small" />
 
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         <LinearLayout
-            android:background="@color/colorDefaultBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorDefaultBackground"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
             android:padding="@dimen/spacing_large">

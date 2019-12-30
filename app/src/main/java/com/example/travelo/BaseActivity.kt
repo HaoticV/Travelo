@@ -84,6 +84,7 @@ abstract class BaseActivity : AppCompatActivity() {
      */
     open fun onLogInSuccess() {
         Log.d("BASE_ACTIVITY", "log in success")
+        finish();
     }
 
     companion object {

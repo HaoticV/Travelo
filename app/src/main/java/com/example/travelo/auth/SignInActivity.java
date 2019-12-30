@@ -35,7 +35,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SignInActivity extends BaseActivity {
     private FirebaseAuth mAuth;
-    private GoogleSignInClient mGoogleSignInClient;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mUsers;
 
@@ -57,12 +56,6 @@ public class SignInActivity extends BaseActivity {
         mDatabase = FirebaseDatabase.getInstance();
         mUsers = mDatabase.getReference("users");
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestProfile()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
 
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
@@ -82,13 +75,8 @@ public class SignInActivity extends BaseActivity {
                         .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult authResult) {
-
                                 Toast.makeText(SignInActivity.this, "Zalogowano!", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(SignInActivity.this, MapsActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
                                 finish();
-                                return;
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -108,8 +96,8 @@ public class SignInActivity extends BaseActivity {
         mGoogleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
+                logIn();
+
             }
         });
     }
@@ -126,11 +114,6 @@ public class SignInActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public void onLogInSuccess() {
-        super.onLogInSuccess();
-        startActivity(new Intent(this, MapsActivity.class));
-    }
 
     private boolean isEmpty() {
         if (TextUtils.isEmpty(mEmail.getText().toString())) {
@@ -145,49 +128,10 @@ public class SignInActivity extends BaseActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                // ...
-            }
-        }
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finishAffinity();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mAuth.getCurrentUser() != null) {
-            startActivity(new Intent(this, MapsActivity.class));
-            finish();
-            return;
-        }
-    }
-
-
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        if (task.isSuccessful()) {
-                            Intent intent = new Intent(SignInActivity.this, MapsActivity.class);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(SignInActivity.this, "Logowanie się nie powiodło!", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-    }
 
 }

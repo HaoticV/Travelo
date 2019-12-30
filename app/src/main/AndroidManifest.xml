@@ -14,8 +14,9 @@
     <dist:module dist:instant="true" />
 
     <application
+        android:allowBackup="false"
+        tools:replace="android:allowBackup"
         android:name="com.example.travelo.QApp"
-        android:allowBackup="true"
         android:icon="@drawable/bike_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"

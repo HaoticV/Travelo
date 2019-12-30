@@ -55,7 +55,8 @@ import kotlinx.android.synthetic.main.navigation_drawer.view.*
 import kotlinx.android.synthetic.main.sheet_map.*
 
 
-class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, TaskLoadedCallback {
+class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+    TaskLoadedCallback {
 
     private val PERMISSION_ID: Int = 42
     private val REQUEST_IMAGE_CAPTURE = 1
@@ -74,10 +75,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_map)
         if (QApp.fUser == null) {
             startActivity(Intent(this, SignInActivity::class.java))
         }
+        setContentView(R.layout.activity_map)
+
         var mapViewBundle: Bundle? = null
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY)
@@ -88,11 +90,14 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
         enableLocalization()
         val mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        mFusedLocationClient.lastLocation.addOnSuccessListener { mLocation = LatLng(it.latitude, it.longitude) }
+        mFusedLocationClient.lastLocation.addOnSuccessListener {
+            mLocation = LatLng(it.latitude, it.longitude)
+        }
         updateUILayer()
         initToolbar()
         initNavigationMenu()
         initBottomSheet()
+
     }
 
     private fun drawMarker(drawable: Int): MarkerOptions {
@@ -133,7 +138,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
                 for (item in hashMap) {
                     when (item.value.first) {
-                        "road" -> googleMap.addMarker(drawMarker(R.drawable.ic_marker_cyclist_road).position(item.value.second))
+                        "road" -> googleMap.addMarker(
+                            drawMarker(R.drawable.ic_marker_cyclist_road).position(
+                                item.value.second
+                            )
+                        )
                             .tag = item.key
                         "city" -> googleMap.addMarker(
                             drawMarker(R.drawable.ic_marker_cyclist_city).position(item.value.second)
@@ -149,7 +158,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.w(this@MapsActivity.toString(), "loadPost:onCancelled", databaseError.toException())
+                Log.w(
+                    this@MapsActivity.toString(),
+                    "loadPost:onCancelled",
+                    databaseError.toException()
+                )
             }
         }
         QApp.fData.reference.addValueEventListener(postListener)
@@ -173,7 +186,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         markerId = marker?.tag.toString()
         val markerListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val route = dataSnapshot.child("routes").child(markerId).getValue(Route::class.java)!!
+                val route =
+                    dataSnapshot.child("routes").child(markerId).getValue(Route::class.java)!!
                 FetchURL(this@MapsActivity).execute(getUrl(route))
                 mMap.animateCamera(
                     CameraUpdateFactory.newLatLngBounds(
@@ -192,7 +206,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             }
 
             override fun onCancelled(p0: DatabaseError) {
-                Toast.makeText(this@MapsActivity, "Wystąpił błąd podczas pobierania trasy", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@MapsActivity,
+                    "Wystąpił błąd podczas pobierania trasy",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         QApp.fData.reference.addListenerForSingleValueEvent(markerListener)
@@ -207,13 +225,18 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         val imagesListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 images = arrayListOf()
-                dataSnapshot.child("routes").child(markerId).child("images").children.forEach { images.add(it.value!!) }
+                dataSnapshot.child("routes").child(markerId).child("images")
+                    .children.forEach { images.add(it.value!!) }
                 imageSlider.sliderAdapter = SliderAdapter(images)
                 imageSlider.sliderAdapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(dataSnapshot: DatabaseError) {
-                Toast.makeText(this@MapsActivity, "Wystąpił błąd podczas pobierania zdjęć", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@MapsActivity,
+                    "Wystąpił błąd podczas pobierania zdjęć",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         QApp.fData.reference.addValueEventListener(imagesListener)
@@ -325,7 +348,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         if (item.itemId == R.id.logout) {
             QApp.fAuth.signOut()
             startActivity(Intent(this, SignInActivity::class.java))
-            finish()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -358,11 +380,14 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         header.navigation_user_name.text = QApp.fUser?.email
 
         val seekBarSearchRadius: CrystalSeekbar = header.seekbar_search_radius
-        seekBarSearchRadius.setOnSeekbarChangeListener { minValue -> header.search_radius.text = minValue.toString() + "km" }
+        seekBarSearchRadius.setOnSeekbarChangeListener { minValue ->
+            header.search_radius.text = minValue.toString() + "km"
+        }
 
         val seekBarSearchRouteLength: CrystalRangeSeekbar = header.seekbar_search_route_length
         seekBarSearchRouteLength.setOnRangeSeekbarChangeListener { minValue, maxValue ->
-            header.search_route_length.text = minValue.toString() + " - " + maxValue.toString() + "km"
+            header.search_route_length.text =
+                minValue.toString() + " - " + maxValue.toString() + "km"
         }
 
         val eventListener = object : ValueEventListener {
@@ -449,19 +474,26 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private fun initBottomSheet() { // get the bottom sheet view
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetBehavior.setBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(p0: View, p1: Float) {
 
             }
 
             override fun onStateChanged(p0: View, newState: Int) {
                 when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                    BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                    BottomSheetBehavior.STATE_DRAGGING -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_DRAGGING
-                    BottomSheetBehavior.STATE_SETTLING -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_SETTLING
-                    BottomSheetBehavior.STATE_EXPANDED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                    BottomSheetBehavior.STATE_HIDDEN -> bottomSheetBehavior.state =
+                        BottomSheetBehavior.STATE_HIDDEN
+                    BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state =
+                        BottomSheetBehavior.STATE_COLLAPSED
+                    BottomSheetBehavior.STATE_DRAGGING -> bottomSheetBehavior.state =
+                        BottomSheetBehavior.STATE_DRAGGING
+                    BottomSheetBehavior.STATE_SETTLING -> bottomSheetBehavior.state =
+                        BottomSheetBehavior.STATE_SETTLING
+                    BottomSheetBehavior.STATE_EXPANDED -> bottomSheetBehavior.state =
+                        BottomSheetBehavior.STATE_EXPANDED
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> bottomSheetBehavior.state =
+                        BottomSheetBehavior.STATE_HALF_EXPANDED
                 }
             }
         })
@@ -482,7 +514,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             val intent = Intent()
             intent.type = "image/*"
             intent.action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(Intent.createChooser(intent, "Wybierz zdjęcie"), REQUEST_PICK_IMAGE)
+            startActivityForResult(
+                Intent.createChooser(intent, "Wybierz zdjęcie"),
+                REQUEST_PICK_IMAGE
+            )
 
         }
     }
@@ -500,9 +535,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             fab_confirm.setOnClickListener {
                 fab_confirm.hide()
                 progressBar.visibility = View.VISIBLE
-                DatabaseUtils.addImageToStorage(markerId, data.data.toString()).addOnSuccessListener {
-                    addPhotoProcess(it)
-                }
+                DatabaseUtils.addImageToStorage(markerId, data.data.toString())
+                    .addOnSuccessListener {
+                        addPhotoProcess(it)
+                    }
             }
 
         }
@@ -517,21 +553,23 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             fab_confirm.setOnClickListener {
                 fab_confirm.hide()
                 progressBar.visibility = View.VISIBLE
-                DatabaseUtils.addImageToStorage(markerId, data.extras!!.get("data") as Bitmap).addOnSuccessListener {
-                    addPhotoProcess(it)
-                }
+                DatabaseUtils.addImageToStorage(markerId, data.extras!!.get("data") as Bitmap)
+                    .addOnSuccessListener {
+                        addPhotoProcess(it)
+                    }
             }
         }
     }
 
     private fun addPhotoProcess(uploadTask: UploadTask.TaskSnapshot) {
         uploadTask.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
-            QApp.fData.reference.child("routes").child(markerId).child("images").push().setValue(uri.toString()).addOnSuccessListener {
-                Log.d("uri", uri.toString())
-                Toast.makeText(this, "Dodano nowe zdjęcie", Toast.LENGTH_SHORT).show()
-                progressBar.visibility = View.GONE
-                fab_add.show()
-            }
+            QApp.fData.reference.child("routes").child(markerId).child("images").push()
+                .setValue(uri.toString()).addOnSuccessListener {
+                    Log.d("uri", uri.toString())
+                    Toast.makeText(this, "Dodano nowe zdjęcie", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE
+                    fab_add.show()
+                }
         }
 
     }
@@ -541,7 +579,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private fun getUrl(trasa: Route): String? { // Origin of route
         val strOrigin = "origin=" + trasa.origin.latitude + "," + trasa.origin.longitude
         // Destination of route
-        val strDest = "destination=" + trasa.destination.latitude + "," + trasa.destination.longitude
+        val strDest =
+            "destination=" + trasa.destination.latitude + "," + trasa.destination.longitude
         // Mode
         val mode = "mode=${trasa.mode}"
         // Building the parameters to the web service
@@ -553,7 +592,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         // Output format
         val output = "json"
         // Building the url to the web service
-        val final = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key)
+        val final =
+            "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(
+                R.string.google_maps_key
+            )
         return final
     }
 
