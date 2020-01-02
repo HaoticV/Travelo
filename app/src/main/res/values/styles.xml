@@ -10,6 +10,7 @@
     </style>
 
     <style name="AppTheme" parent="BaseTheme">
+        <item name="android:windowAnimationStyle">@style/Replace</item>
         <!-- Customize your theme here. -->
     </style>
 
@@ -43,5 +44,13 @@
         <item name="mrl_rippleAlpha">0.2</item>
     </style>
 
+    <style name="Replace">
+        <item name="android:activityOpenEnterAnimation">@anim/replace_anim</item>
+        <item name="android:activityOpenExitAnimation">@anim/replace_anim</item>
+        <item name="android:activityCloseEnterAnimation">@anim/replace_anim</item>
+        <item name="android:activityCloseExitAnimation">@anim/replace_anim</item>
+        <item name="android:taskOpenEnterAnimation">@anim/replace_anim</item>
+        <item name="android:taskOpenExitAnimation">@anim/replace_anim</item>
+    </style>
 
 </resources>

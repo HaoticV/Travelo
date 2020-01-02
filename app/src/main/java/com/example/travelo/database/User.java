@@ -5,7 +5,6 @@ public class User {
     String name;
     String surname;
     String email;
-    String city;
     boolean admin;
 
     public String getId() {
@@ -40,14 +39,6 @@ public class User {
         this.email = email;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public boolean isAdmin() {
         return admin;
     }
@@ -59,12 +50,11 @@ public class User {
     public User() {
     }
 
-    public User(String id, String name, String surname, String login, String email, String city, String street, boolean admin) {
+    public User(String id, String name, String surname, String login, String email, boolean admin) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.city = city;
         this.admin = admin;
     }
 }

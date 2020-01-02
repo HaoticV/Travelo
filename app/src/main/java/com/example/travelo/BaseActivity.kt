@@ -5,11 +5,15 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.travelo.database.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
 /**
  *PL Bazowa aktywność - rozszerzać oknami na których ma znaczenie zmiana logowania
@@ -49,11 +53,26 @@ abstract class BaseActivity : AppCompatActivity() {
             val tasks = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = tasks.getResult(ApiException::class.java)
-
                 val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
                 QApp.fAuth.signInWithCredential(credential)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
+                            val userExistsListener = object : ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    if(!dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser()?.uid!!)){
+                                        val user = User()
+                                        user.isAdmin = false
+                                        user.name = account?.givenName
+                                        user.surname = account?.familyName
+                                        user.email = account?.email
+                                        QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).setValue(user)
+                            }
+                        }
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                    // Getting Post failed, log a message
+                                }
+                            }
+                            QApp.fData.reference.child("users").addListenerForSingleValueEvent(userExistsListener)
                             onLogInSuccess()
                         } else {
                             onLogInFailure(task.exception)
@@ -84,7 +103,7 @@ abstract class BaseActivity : AppCompatActivity() {
      */
     open fun onLogInSuccess() {
         Log.d("BASE_ACTIVITY", "log in success")
-        finish();
+        finish()
     }
 
     companion object {
