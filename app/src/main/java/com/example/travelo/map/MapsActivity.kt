@@ -647,7 +647,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         } else if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawers()
-        }else if(::currentPolyline.isInitialized){
+        }else if(currentPolyline.isVisible){
+            currentPolyline.isVisible = false
             currentPolyline.remove()
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             mMap.setPadding(0, 0, 0, 0)
