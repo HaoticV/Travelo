@@ -45,7 +45,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN && resultCode == Activity.RESULT_OK) {
+        if (requestCode == RC_SIGN_IN) {
             val tasks = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = tasks.getResult(ApiException::class.java)
