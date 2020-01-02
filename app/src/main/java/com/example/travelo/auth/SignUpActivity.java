@@ -81,7 +81,6 @@ public class SignUpActivity extends AppCompatActivity {
                                 Toast.makeText(SignUpActivity.this, "Zarejestrowano!", Toast.LENGTH_LONG).show();
                                 inProgress(false);
                                 finish();
-                                return;
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override

@@ -22,6 +22,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
@@ -377,8 +378,19 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             true
         }
 
-        header.navigation_user_name.text = QApp.fUser?.email
+        val nameListener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
 
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                //val name = dataSnapshot.child(QApp.fAuth.currentUser?.uid!!).child("name").value
+                //val surname = dataSnapshot.child(QApp.fAuth.currentUser?.uid!!).child("surname").value
+                //header.navigation_user_name.text = name.toString()+ " "+surname.toString()
+            }
+
+        }
+        QApp.fData.reference.addListenerForSingleValueEvent(nameListener)
         val seekBarSearchRadius: CrystalSeekbar = header.seekbar_search_radius
         seekBarSearchRadius.setOnSeekbarChangeListener { minValue ->
             header.search_radius.text = minValue.toString() + "km"
@@ -628,6 +640,20 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
+    }
+
+    override fun onBackPressed() {
+        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        } else if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawers()
+        }else if(currentPolyline.isVisible){
+            currentPolyline.isVisible = false
+            currentPolyline.remove()
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            mMap.setPadding(0, 0, 0, 0)
+        }
+        else super.onBackPressed()
     }
 
     //endregion
