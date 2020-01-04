@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelo.R
 import com.example.travelo.lib.ItemAnimation
-import com.example.travelo.models.Route
 import com.example.travelo.models.User
 import kotlinx.android.synthetic.main.item_people_chat.view.*
 
