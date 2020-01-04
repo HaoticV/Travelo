@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.balysv.materialripple.MaterialRippleLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/RippleStyleBlack"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/lyt_parent"
@@ -19,7 +25,7 @@
             android:layout_marginLeft="@dimen/spacing_large"
             android:layout_marginTop="@dimen/spacing_middle"
             android:layout_marginRight="@dimen/spacing_large"
-            android:src="@drawable/photo_female_1" />
+            android:src="@drawable/ic_cyclist_road" />
 
         <View
             android:layout_width="@dimen/spacing_medium"
@@ -47,6 +53,41 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/grey_90" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:layout_marginBottom="@dimen/spacing_medium">
+
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/ic_sheet_map_stopwatch" />
+
+                    <TextView
+                        android:id="@+id/route_time"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_xsmall"
+                        android:layout_marginRight="@dimen/spacing_xsmall"
+                        android:text="30min" />
+
+                    <ImageView
+                        android:id="@+id/imageView4"
+                        android:layout_width="20dp"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/ic_sheet_map_route" />
+
+                    <TextView
+                        android:id="@+id/route_distance"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_xsmall"
+                        android:layout_weight="1"
+                        android:text="30km" />
+                </LinearLayout>
+
                 <TextView
                     android:id="@+id/description"
                     android:layout_width="wrap_content"
@@ -62,13 +103,16 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/grey_10" />
+
 
         </LinearLayout>
 
+
+    </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_10" />
     </LinearLayout>
 
 </com.balysv.materialripple.MaterialRippleLayout>
