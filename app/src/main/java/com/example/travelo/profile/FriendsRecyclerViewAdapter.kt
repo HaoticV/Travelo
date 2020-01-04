@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.travelo.R
 import com.example.travelo.lib.ItemAnimation
 import com.example.travelo.models.Route
+import com.example.travelo.models.User
 import kotlinx.android.synthetic.main.item_people_chat.view.*
 
-class RouteRecyclerViewAdapter(val context: Context, private val items: ArrayList<Route>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FriendsRecyclerViewAdapter(val context: Context, private val items: ArrayList<User>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -26,7 +27,6 @@ class RouteRecyclerViewAdapter(val context: Context, private val items: ArrayLis
     }
 
     private var lastPosition = -1
-    private val on_attach = true
 
     private fun setAnimation(view: View, position: Int) {
         if (position > lastPosition) {

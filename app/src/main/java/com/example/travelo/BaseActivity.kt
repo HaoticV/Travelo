@@ -1,11 +1,10 @@
 package com.example.travelo
 
-import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.travelo.database.User
+import com.example.travelo.models.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -59,12 +58,13 @@ abstract class BaseActivity : AppCompatActivity() {
                         if (task.isSuccessful) {
                             val userExistsListener = object : ValueEventListener {
                                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                    if(!dataSnapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser()?.uid!!)){
-                                        val user = User()
-                                        user.isAdmin = false
-                                        user.name = account?.givenName
-                                        user.surname = account?.familyName
-                                        user.email = account?.email
+                                    if(!dataSnapshot.hasChild(FirebaseAuth.getInstance().currentUser?.uid!!)){
+                                        val user =
+                                            User()
+                                        user.admin = false
+                                        user.name = account?.givenName.toString()
+                                        user.surname = account?.familyName.toString()
+                                        user.email = account?.email.toString()
                                         QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).setValue(user)
                             }
                         }

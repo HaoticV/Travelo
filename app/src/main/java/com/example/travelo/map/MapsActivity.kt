@@ -384,13 +384,13 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                //val name = dataSnapshot.child(QApp.fAuth.currentUser?.uid!!).child("name").value
-                //val surname = dataSnapshot.child(QApp.fAuth.currentUser?.uid!!).child("surname").value
-                //header.navigation_user_name.text = name.toString()+ " "+surname.toString()
+                val name = dataSnapshot.child(QApp.fAuth.currentUser?.uid!!).child("name").value
+                val surname = dataSnapshot.child(QApp.fAuth.currentUser?.uid!!).child("surname").value
+                header.navigation_user_name.text = name.toString()+ " "+surname.toString()
             }
 
         }
-        QApp.fData.reference.addListenerForSingleValueEvent(nameListener)
+        QApp.fData.reference.child("users").addListenerForSingleValueEvent(nameListener)
         val seekBarSearchRadius: CrystalSeekbar = header.seekbar_search_radius
         seekBarSearchRadius.setOnSeekbarChangeListener { minValue ->
             header.search_radius.text = minValue.toString() + "km"
@@ -647,7 +647,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         } else if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawers()
-        }else if(currentPolyline.isVisible){
+        }else if(::currentPolyline.isInitialized && currentPolyline.isVisible){
             currentPolyline.isVisible = false
             currentPolyline.remove()
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
