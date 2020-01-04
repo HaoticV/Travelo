@@ -100,22 +100,17 @@
                                 android:layout_marginTop="@dimen/spacing_medium"
                                 android:maxLines="2"
                                 android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt "
-
                                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                                 android:textColor="@color/grey_40" />
                         </LinearLayout>
-
                         <ImageView
-                            android:layout_gravity="center"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/ic_heart_red"/>
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_heart_red" />
                     </LinearLayout>
                 </LinearLayout>
-
             </LinearLayout>
-
-
         </LinearLayout>
 
         <View
