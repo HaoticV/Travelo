@@ -1,6 +1,7 @@
 package com.example.travelo.profile
 
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -40,7 +41,7 @@ class ProfileActivity : BaseActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         setSupportActionBar(toolbar)
-        collapsing_toolbar.title = QApp.fUser?.displayName
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

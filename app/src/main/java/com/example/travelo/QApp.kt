@@ -33,6 +33,5 @@ class QApp : Application() {
         lateinit var fStorage: FirebaseStorage
 
         var fUser: FirebaseUser? = null
-        var currentUser: User? = null
     }
 }

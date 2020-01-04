@@ -106,17 +106,6 @@ abstract class BaseActivity : AppCompatActivity() {
      */
     open fun onLogInSuccess() {
         Log.d("BASE_ACTIVITY", "log in success")
-        val userListener = object : ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {
-                Log.w(ContentValues.TAG, "loadPost:onCancelled", p0.toException())
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                QApp.currentUser = p0.child(QApp.fAuth.currentUser?.uid!!).getValue(User::class.java)
-            }
-
-        }
-        QApp.fData.reference.child("users").addValueEventListener(userListener)
         finish()
     }
 

@@ -73,6 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 user.setName(mName.getText().toString());
                                 user.setSurname(mSurname.getText().toString());
                                 user.setEmail(mEmail.getText().toString());
+                                user.setDisplayName(mName.getText().toString() + " "+mSurname.getText().toString());
 
                                 mUsers.child(uid).setValue(user);
 

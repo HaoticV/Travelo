@@ -1,6 +1,5 @@
 package com.example.travelo.models
 
-import android.net.Uri
 import com.example.travelo.R
 import java.io.Serializable
 

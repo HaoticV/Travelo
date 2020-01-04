@@ -378,7 +378,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             true
         }
 
-        header.navigation_user_name.text = QApp.currentUser?.displayName
         val seekBarSearchRadius: CrystalSeekbar = header.seekbar_search_radius
         seekBarSearchRadius.setOnSeekbarChangeListener { minValue ->
             header.search_radius.text = minValue.toString() + "km"
@@ -635,14 +634,14 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         } else if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawers()
-        }else if(::currentPolyline.isInitialized && currentPolyline.isVisible){
+        } else if (::currentPolyline.isInitialized && currentPolyline.isVisible) {
             currentPolyline.isVisible = false
             currentPolyline.remove()
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             mMap.setPadding(0, 0, 0, 0)
-        }
-        else super.onBackPressed()
+        } else super.onBackPressed()
     }
+
 
     //endregion
 }
