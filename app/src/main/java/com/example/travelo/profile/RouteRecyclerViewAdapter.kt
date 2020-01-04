@@ -16,8 +16,7 @@ class RouteRecyclerViewAdapter(val context: Context, private val items: ArrayLis
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val v =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_profile_route, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_profile_route, parent, false)
         return RouteRecyclerViewAdapterVH(v)
     }
 

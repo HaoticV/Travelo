@@ -4,8 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.travelo.R
 import com.example.travelo.lib.ItemAnimation
 import com.example.travelo.models.User
@@ -21,7 +23,8 @@ class FriendsRecyclerViewAdapter(val context: Context, private val items: ArrayL
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = holder.itemView
-        item.name.text = items[position].name
+        item.name.text = items[position].displayName
+        Glide.with(context).load(items[position].image).into(item.image)
         setAnimation(holder.itemView, position)
     }
 
@@ -40,6 +43,7 @@ class FriendsRecyclerViewAdapter(val context: Context, private val items: ArrayL
 
     class RouteRecyclerViewAdapterVH(v: View) : RecyclerView.ViewHolder(v) {
         var name: TextView = v.findViewById<View>(R.id.name) as TextView
+        var image: ImageView = v.findViewById<View>(R.id.image) as ImageView
 
     }
 }
