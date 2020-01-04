@@ -3,6 +3,7 @@ package com.example.travelo
 import android.app.Application
 import android.content.Context
 import android.content.res.Resources
+import com.example.travelo.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
@@ -32,5 +33,6 @@ class QApp : Application() {
         lateinit var fStorage: FirebaseStorage
 
         var fUser: FirebaseUser? = null
+        var currentUser: User? = null
     }
 }

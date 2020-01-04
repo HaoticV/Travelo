@@ -76,7 +76,7 @@ public class SignInActivity extends BaseActivity {
                             @Override
                             public void onSuccess(AuthResult authResult) {
                                 Toast.makeText(SignInActivity.this, "Zalogowano!", Toast.LENGTH_LONG).show();
-                                finish();
+                                onLogInSuccess();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override

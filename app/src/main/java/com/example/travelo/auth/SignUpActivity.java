@@ -27,7 +27,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private EditText mName;
     private EditText mSurname;
-    private EditText mCity;
     private EditText mEmail;
     private EditText mPassword;
     private EditText mPassword2;
@@ -47,7 +46,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         mName = findViewById(R.id.name);
         mSurname = findViewById(R.id.surname);
-        mCity = findViewById(R.id.city);
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
         mPassword2 = findViewById(R.id.password2);
@@ -111,10 +109,6 @@ public class SignUpActivity extends AppCompatActivity {
         }
         if (TextUtils.isEmpty(mSurname.getText().toString())) {
             mSurname.setError("Pole jest wymagane!");
-            return true;
-        }
-        if (TextUtils.isEmpty(mCity.getText().toString())) {
-            mCity.setError("Pole jest wymagane!");
             return true;
         }
         if (TextUtils.isEmpty(mEmail.getText().toString())) {

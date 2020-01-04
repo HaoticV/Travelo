@@ -378,19 +378,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             true
         }
 
-        val nameListener = object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val name = dataSnapshot.child(QApp.fAuth.currentUser?.uid!!).child("name").value
-                val surname = dataSnapshot.child(QApp.fAuth.currentUser?.uid!!).child("surname").value
-                header.navigation_user_name.text = name.toString()+ " "+surname.toString()
-            }
-
-        }
-        QApp.fData.reference.child("users").addListenerForSingleValueEvent(nameListener)
+        header.navigation_user_name.text = QApp.currentUser?.displayName
         val seekBarSearchRadius: CrystalSeekbar = header.seekbar_search_radius
         seekBarSearchRadius.setOnSeekbarChangeListener { minValue ->
             header.search_radius.text = minValue.toString() + "km"

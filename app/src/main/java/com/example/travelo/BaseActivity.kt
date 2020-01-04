@@ -1,5 +1,6 @@
 package com.example.travelo
 
+import android.content.ContentValues
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
@@ -65,6 +66,8 @@ abstract class BaseActivity : AppCompatActivity() {
                                         user.name = account?.givenName.toString()
                                         user.surname = account?.familyName.toString()
                                         user.email = account?.email.toString()
+                                        user.image = account?.photoUrl.toString()
+                                        user.displayName = account?.displayName!!
                                         QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).setValue(user)
                             }
                         }
@@ -103,6 +106,17 @@ abstract class BaseActivity : AppCompatActivity() {
      */
     open fun onLogInSuccess() {
         Log.d("BASE_ACTIVITY", "log in success")
+        val userListener = object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Log.w(ContentValues.TAG, "loadPost:onCancelled", p0.toException())
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                QApp.currentUser = p0.child(QApp.fAuth.currentUser?.uid!!).getValue(User::class.java)
+            }
+
+        }
+        QApp.fData.reference.child("users").addValueEventListener(userListener)
         finish()
     }
 
