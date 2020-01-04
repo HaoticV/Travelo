@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.travelo.BaseActivity
 import com.example.travelo.QApp
 import com.example.travelo.R
@@ -41,6 +41,12 @@ class ProfileActivity : BaseActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
+        collapsing_toolbar.title = QApp.currentUser?.displayName
+        Glide.with(this).load(QApp.currentUser?.image).into(circle_image_view)
+
 
     }
 
@@ -92,8 +98,6 @@ class ProfileActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.home) {
             finish()
-        } else {
-            Toast.makeText(applicationContext, item.title, Toast.LENGTH_SHORT).show()
         }
         return super.onOptionsItemSelected(item)
     }
