@@ -1,10 +1,10 @@
 package com.example.travelo.profile
 
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.travelo.BaseActivity
 import com.example.travelo.QApp
 import com.example.travelo.R
-import com.example.travelo.models.User
 import com.example.travelo.models.Route
+import com.example.travelo.models.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

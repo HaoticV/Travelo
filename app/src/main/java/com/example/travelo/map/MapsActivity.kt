@@ -3,6 +3,7 @@ package com.example.travelo.map
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -24,6 +25,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.bumptech.glide.Glide
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
 import com.example.travelo.BaseActivity
@@ -35,6 +37,7 @@ import com.example.travelo.directionHelpers.FetchURL
 import com.example.travelo.directionHelpers.TaskLoadedCallback
 import com.example.travelo.lib.ViewAnimation
 import com.example.travelo.models.Route
+import com.example.travelo.models.User
 import com.example.travelo.profile.ProfileActivity
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -44,6 +47,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -76,7 +80,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (QApp.fUser == null) {
+        if (QApp.fAuth.currentUser == null) {
             startActivity(Intent(this, SignInActivity::class.java))
         }
         setContentView(R.layout.activity_map)
@@ -99,6 +103,35 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         initNavigationMenu()
         initBottomSheet()
 
+        FirebaseAuth.getInstance().addAuthStateListener {
+            if (QApp.fAuth.currentUser != null) {
+                getCurrentUser()
+            }
+        }
+    }
+
+    private fun getCurrentUser() {
+        val userListener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                Log.w(ContentValues.TAG, "loadPost:onCancelled", p0.toException())
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.exists()) {
+                    QApp.currentUser = p0.getValue(User::class.java)!!
+                    updateUserUI()
+                }
+            }
+
+        }
+        QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).addValueEventListener(userListener)
+    }
+
+    private fun updateUserUI() {
+        val navigationView: NavigationView = findViewById(R.id.nav_view)
+        val header: View = navigationView.getHeaderView(0)
+        header.navigation_user_name.text = QApp.currentUser?.displayName
+        Glide.with(this).load(QApp.currentUser?.image).into(header.avatar)
     }
 
     private fun drawMarker(drawable: Int): MarkerOptions {
@@ -348,6 +381,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.logout) {
             QApp.fAuth.signOut()
+            QApp.currentUser = null
             startActivity(Intent(this, SignInActivity::class.java))
         }
         return super.onOptionsItemSelected(item)

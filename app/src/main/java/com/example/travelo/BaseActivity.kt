@@ -1,6 +1,5 @@
 package com.example.travelo
 
-import android.content.ContentValues
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
@@ -21,21 +20,21 @@ import com.google.firebase.database.ValueEventListener
  */
 abstract class BaseActivity : AppCompatActivity() {
 
-    private val baseAuthStateListener: FirebaseAuth.AuthStateListener by lazy {
-        FirebaseAuth.AuthStateListener { firebaseAuth ->
-            QApp.fUser = firebaseAuth.currentUser
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        QApp.fAuth.addAuthStateListener(baseAuthStateListener)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        QApp.fAuth.removeAuthStateListener(baseAuthStateListener)
-    }
+    //private val baseAuthStateListener: FirebaseAuth.AuthStateListener by lazy {
+    //    FirebaseAuth.AuthStateListener { firebaseAuth ->
+    //        //QApp.fAuth.currentUser = firebaseAuth.currentUser
+    //    }
+    //}
+//
+    //override fun onResume() {
+    //    super.onResume()
+    //    QApp.fAuth.addAuthStateListener(baseAuthStateListener)
+    //}
+//
+    //override fun onPause() {
+    //    super.onPause()
+    //    QApp.fAuth.removeAuthStateListener(baseAuthStateListener)
+    //}
 
     fun logIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
