@@ -43,6 +43,9 @@ class ProfileActivity : BaseActivity() {
             currentPage = "users"
             initRecyclerView()
         }
+        profile_stats_fab.setOnClickListener {
+            //QApp.fData.reference.child("users").child(QApp.fAuth.uid.toString()).child("likedRoutes").push().setValue("-LvVQdHuv-3GDS89YV")
+        }
         circle_image_view.setOnLongClickListener { editProfilePicture() }
     }
 
@@ -110,14 +113,14 @@ class ProfileActivity : BaseActivity() {
                     "routes" -> {
                         val items = arrayListOf<Any>()
                         items.add("Twoje trasy")
-                        dataSnapshot.child("routes").children.forEach {
-                            val item = it.getValue(Route::class.java)
-                            items.add(item!!)
+                        dataSnapshot.child("users").child(QApp.fAuth.currentUser?.uid!!).child("ownRoutes").children.forEach {
+                            val node = dataSnapshot.child("routes").child(it.value.toString())
+                            items.add(node.getValue(Route::class.java)!!)
                         }
                         items.add("Ulubione Trasy")
-                        dataSnapshot.child("routes").children.forEach {
-                            val item = it.getValue(Route::class.java)
-                            items.add(item!!)
+                        dataSnapshot.child("users").child(QApp.fAuth.currentUser?.uid!!).child("likedRoutes").children.forEach {
+                            val node = dataSnapshot.child("routes").child(it.value.toString())
+                            items.add(node.getValue(Route::class.java)!!)
                         }
                         recyclerView.adapter = RouteRecyclerViewAdapter(this@ProfileActivity, items)
                     }
@@ -130,7 +133,6 @@ class ProfileActivity : BaseActivity() {
                         }
                     }
                 }
-
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

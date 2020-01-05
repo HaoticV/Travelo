@@ -33,14 +33,10 @@ class RouteRecyclerViewAdapter(val context: Context, private val items: ArrayLis
             item.route_distance.text = route.distanceText
             item.route_time.text = route.timeText
 
-            if (route.type.equals("mountain")) {
-                item.image.setImageResource(R.drawable.ic_cyclist_mountain)
-            }
-            if (route.type.equals("city")) {
-                item.image.setImageResource(R.drawable.ic_cyclist_city)
-            }
-            if (route.type.equals("road")) {
-                item.image.setImageResource(R.drawable.ic_cyclist_road)
+            when (route.type) {
+                "mountain" -> item.image.setImageResource(R.drawable.ic_cyclist_mountain)
+                "city" -> item.image.setImageResource(R.drawable.ic_cyclist_city)
+                "road" -> item.image.setImageResource(R.drawable.ic_cyclist_road)
             }
         } else {
             val view: SectionViewHolder = holder as SectionViewHolder
