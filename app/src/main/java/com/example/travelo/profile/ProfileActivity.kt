@@ -161,36 +161,36 @@ class ProfileActivity : BaseActivity() {
                         recyclerView.adapter = mToursAdapter
                     }
                 }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(
+                    this@ProfileActivity.toString(),
+                    "loadPost:onCancelled",
+                    databaseError.toException()
+                )
+            }
         }
 
-        override fun onCancelled(databaseError: DatabaseError) {
-            Log.w(
-                this@ProfileActivity.toString(),
-                "loadPost:onCancelled",
-                databaseError.toException()
-            )
-        }
+        QApp.fData.reference.addListenerForSingleValueEvent(routesListener)
     }
 
-    QApp.fData.reference.addListenerForSingleValueEvent(routesListener)
-}
+    private fun setUpOnClickListener() {
+        mRoutesAdapter.setOnItemClickListener(object : RouteRecyclerViewAdapter.OnItemClickListener {
+            override fun onItemClick(view: View?, obj: Route?, position: Int) {
+                Snackbar.make(parent_view, "Item " + obj!!.name + " clicked", Snackbar.LENGTH_SHORT).show()
+            }
 
-private fun setUpOnClickListener() {
-    mRoutesAdapter.setOnItemClickListener(object : RouteRecyclerViewAdapter.OnItemClickListener {
-        override fun onItemClick(view: View?, obj: Route?, position: Int) {
-            Snackbar.make(parent_view, "Item " + obj!!.name + " clicked", Snackbar.LENGTH_SHORT).show()
-        }
-
-        override fun onLikeClick(view: View?, obj: Route?, position: Int) {
-            view?.isSelected = !view?.isSelected!!
-        }
-    })
-}
-
-override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    if (item.itemId == R.id.home) {
-        finish()
+            override fun onLikeClick(view: View?, obj: Route?, position: Int) {
+                view?.isSelected = !view?.isSelected!!
+            }
+        })
     }
-    return super.onOptionsItemSelected(item)
-}
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.home) {
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }

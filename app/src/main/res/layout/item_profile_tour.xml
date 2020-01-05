@@ -44,8 +44,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="@dimen/spacing_medium"
-                        android:text="Wspólna wycieczka po okolicach"
                         android:maxLines="3"
+                        android:text="Wspólna wycieczka po okolicach"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/grey_90" />
 
