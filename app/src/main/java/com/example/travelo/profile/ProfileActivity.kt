@@ -49,7 +49,7 @@ class ProfileActivity : BaseActivity() {
             currentPage = "users"
             initRecyclerView()
         }
-        profile_tour_fab.setOnClickListener{
+        profile_tour_fab.setOnClickListener {
             currentPage = "tours"
             initRecyclerView()
         }
@@ -147,45 +147,50 @@ class ProfileActivity : BaseActivity() {
                         }
                     }
                     "tours" -> {
-                        val items = arrayListOf<Tour>()
+                        val items: ArrayList<Triple<Tour, Route, ArrayList<User>>> = arrayListOf()
                         dataSnapshot.child("tours").children.forEach {
-                            val item = it.getValue(Tour::class.java)
-                            items.add(item!!)
-                            mToursAdapter = TourRecyclerViewAdapter(this@ProfileActivity, items)
-                            recyclerView.adapter = mToursAdapter
+                            val tour: Tour = it.getValue(Tour::class.java)!!
+                            val route: Route = dataSnapshot.child("routes").child(tour.routeId).getValue(Route::class.java)!!
+                            val participants = arrayListOf<User>()
+                            val usersId = arrayListOf<String>()
+                            tour.users.forEach { usersId.add(it.value) }
+                            usersId.forEach { participants.add(dataSnapshot.child("users").child(it).getValue(User::class.java)!!) }
+                            items.add(Triple(tour, route, participants))
                         }
+                        mToursAdapter = TourRecyclerViewAdapter(this@ProfileActivity, items)
+                        recyclerView.adapter = mToursAdapter
                     }
                 }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.w(
-                    this@ProfileActivity.toString(),
-                    "loadPost:onCancelled",
-                    databaseError.toException()
-                )
-            }
         }
 
-        QApp.fData.reference.addListenerForSingleValueEvent(routesListener)
-    }
-
-    private fun setUpOnClickListener() {
-        mRoutesAdapter.setOnItemClickListener(object : RouteRecyclerViewAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, obj: Route?, position: Int) {
-                Snackbar.make(parent_view, "Item " + obj!!.name + " clicked", Snackbar.LENGTH_SHORT).show()
-            }
-
-            override fun onLikeClick(view: View?, obj: Route?, position: Int) {
-                view?.isSelected = !view?.isSelected!!
-            }
-        })
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.home) {
-            finish()
+        override fun onCancelled(databaseError: DatabaseError) {
+            Log.w(
+                this@ProfileActivity.toString(),
+                "loadPost:onCancelled",
+                databaseError.toException()
+            )
         }
-        return super.onOptionsItemSelected(item)
     }
+
+    QApp.fData.reference.addListenerForSingleValueEvent(routesListener)
+}
+
+private fun setUpOnClickListener() {
+    mRoutesAdapter.setOnItemClickListener(object : RouteRecyclerViewAdapter.OnItemClickListener {
+        override fun onItemClick(view: View?, obj: Route?, position: Int) {
+            Snackbar.make(parent_view, "Item " + obj!!.name + " clicked", Snackbar.LENGTH_SHORT).show()
+        }
+
+        override fun onLikeClick(view: View?, obj: Route?, position: Int) {
+            view?.isSelected = !view?.isSelected!!
+        }
+    })
+}
+
+override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    if (item.itemId == R.id.home) {
+        finish()
+    }
+    return super.onOptionsItemSelected(item)
+}
 }

@@ -10,9 +10,10 @@ import com.example.travelo.R
 import com.example.travelo.lib.ItemAnimation
 import com.example.travelo.models.Route
 import com.example.travelo.models.Tour
-import kotlinx.android.synthetic.main.item_profile_route.view.*
+import com.example.travelo.models.User
+import kotlinx.android.synthetic.main.item_profile_tour.view.*
 
-class TourRecyclerViewAdapter(val context: Context, private val items: ArrayList<Tour>) :
+class TourRecyclerViewAdapter(val context: Context, private val items: ArrayList<Triple<Tour, Route, ArrayList<User>>>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
@@ -24,6 +25,28 @@ class TourRecyclerViewAdapter(val context: Context, private val items: ArrayList
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = holder.itemView
+        item.tour_name.text = items[position].first.name
+        item.tour_date.text = items[position].first.date
+        item.tour_date_time.text = items[position].first.dateTime
+        item.number_of_participants.text = items[position].third.size.toString()
+        item.route_name.text = items[position].second.name
+        when (items[position].second.type) {
+            "mountain" -> {
+                item.ic_route_type.setImageResource(R.drawable.ic_cyclist_mountain)
+                item.route_type.text = "Trasa górska"
+            }
+            "city" -> {
+                item.ic_route_type.setImageResource(R.drawable.ic_cyclist_city)
+                item.route_type.text = "Trasa miejska"
+            }
+            "road" -> {
+                item.ic_route_type.setImageResource(R.drawable.ic_cyclist_road)
+                item.route_type.text = "Trasa szosowa"
+            }
+        }
+        item.route_time.text = items[position].second.timeText
+        item.route_distance.text = items[position].second.distanceText
+
         setAnimation(holder.itemView, position)
     }
 
