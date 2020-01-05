@@ -18,15 +18,6 @@
             android:minHeight="?attr/actionBarSize"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/profile_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="@dimen/spacing_large"
-                android:layout_marginTop="@dimen/spacing_middle"
-                android:layout_marginRight="@dimen/spacing_large"
-                android:src="@drawable/photo_female_1" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,24 +25,31 @@
 
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingTop="@dimen/spacing_middle"
-                    android:paddingBottom="@dimen/spacing_middle">
+                    android:orientation="horizontal"
+                    android:padding="@dimen/spacing_large">
+
+
+                    <ImageView
+                        android:id="@+id/profile_image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/photo_female_1" />
+
 
                     <TextView
                         android:id="@+id/tour_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/spacing_middle"
-                        android:layout_marginRight="@dimen/spacing_middle"
-                        android:text="Wspólna wycieczka po okolicach Lublina"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/spacing_medium"
+                        android:text="Wspólna wycieczka po okolicach"
+                        android:maxLines="3"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/grey_90" />
 
                 </LinearLayout>
-
 
 
                 <LinearLayout
@@ -60,58 +58,135 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/spacing_medium"
+                        android:gravity="right"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textdsds"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="2"
+                            android:text="Wycieczka:"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textColor="@color/grey_40" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/spacing_small"
                         android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/spacing_small"
                             android:orientation="horizontal">
 
-                            <LinearLayout
+
+                            <ImageView
+                                android:id="@+id/imageView8"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                app:srcCompat="@drawable/ic_profile_date_time" />
+
+                            <TextView
+                                android:id="@+id/tour_date_time"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:orientation="horizontal">
+                                android:text="12:30" />
 
-                                <ImageView
-                                    android:id="@+id/imageView8"
-                                    android:layout_width="30dp"
-                                    android:layout_height="30dp"
-                                    app:srcCompat="@drawable/ic_profile_date_time" />
 
-                                <TextView
-                                    android:id="@+id/tour_date_time"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_margin="@dimen/spacing_small"
-                                    android:text="12:30" />
-                            </LinearLayout>
+                            <ImageView
+                                android:id="@+id/imageView9"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                app:srcCompat="@drawable/ic_profile_date_calendar" />
 
-                            <LinearLayout
+                            <TextView
+                                android:id="@+id/tour_date"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:id="@+id/imageView9"
-                                    android:layout_width="30dp"
-                                    android:layout_height="30dp"
-                                    app:srcCompat="@drawable/ic_profile_date_calendar" />
-
-                                <TextView
-                                    android:id="@+id/tour_date"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_margin="@dimen/spacing_small"
-                                    android:text="01.02.2020" />
-                            </LinearLayout>
+                                android:text="01.02.2020" />
 
                         </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/spacing_small"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imageView11"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                app:srcCompat="@drawable/ic_profile_users" />
+
+                            <TextView
+                                android:id="@+id/number_of_people"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/spacing_small"
+                                android:text="Liczba uczestników: 5" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/grey_10" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/spacing_medium"
+                        android:gravity="right"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textdsdssa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="2"
+                            android:text="Trasa:"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textColor="@color/grey_40" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/spacing_small"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/route_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/spacing_small"
+                            android:maxLines="3"
+                            android:text="Wokół Jaca chałupy"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textColor="@color/grey_90" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -136,94 +211,50 @@
 
                         <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/spacing_small"
-                            android:orientation="horizontal">
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/spacing_small">
 
                             <ImageView
-                                android:id="@+id/imageView11"
+                                android:id="@+id/imageView3"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                app:srcCompat="@drawable/ic_profile_users" />
+                                app:srcCompat="@drawable/ic_sheet_map_stopwatch" />
 
                             <TextView
-                                android:id="@+id/number_of_people"
+                                android:id="@+id/route_time"
+                                android:layout_width="50dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/spacing_small"
+                                android:text="30min" />
+
+                            <ImageView
+                                android:id="@+id/imageView4"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                app:srcCompat="@drawable/ic_sheet_map_route" />
+
+                            <TextView
+                                android:id="@+id/route_distance"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:text="Liczba uczestników: 5" />
+                                android:text="30km" />
                         </LinearLayout>
+
+
                     </LinearLayout>
-                </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/spacing_small"
-                    android:orientation="vertical">
-                    <TextView
-                        android:id="@+id/route_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:maxLines="2"
-                        android:text="Wokół Jaca chałupy"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        android:textColor="@color/grey_90" />
-                    <TextView
-                        android:id="@+id/textdsds"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:maxLines="2"
-                        android:text="Parametry trasy:"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        android:textColor="@color/grey_40" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/spacing_medium"
-                        android:layout_marginBottom="@dimen/spacing_medium">
-
-                        <ImageView
-                            android:id="@+id/imageView3"
-                            android:layout_width="20dp"
-                            android:layout_height="match_parent"
-                            app:srcCompat="@drawable/ic_sheet_map_stopwatch" />
-
-                        <TextView
-                            android:id="@+id/route_time"
-                            android:layout_width="50dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/spacing_xsmall"
-                            android:layout_marginRight="@dimen/spacing_xsmall"
-                            android:text="30min" />
-
-                        <ImageView
-                            android:id="@+id/imageView4"
-                            android:layout_width="20dp"
-                            android:layout_height="match_parent"
-                            app:srcCompat="@drawable/ic_sheet_map_route" />
-
-                        <TextView
-                            android:id="@+id/route_distance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/spacing_xsmall"
-                            android:text="30km" />
-                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
 
-
-
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:background="@color/grey_10" />
     </LinearLayout>
 
