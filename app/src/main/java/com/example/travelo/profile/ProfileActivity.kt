@@ -180,10 +180,6 @@ class ProfileActivity : BaseActivity() {
             override fun onItemClick(view: View?, obj: Route?, position: Int) {
                 Snackbar.make(parent_view, "Item " + obj!!.name + " clicked", Snackbar.LENGTH_SHORT).show()
             }
-
-            override fun onLikeClick(view: View?, obj: Route?, position: Int) {
-                view?.isSelected = !view?.isSelected!!
-            }
         })
     }
 
