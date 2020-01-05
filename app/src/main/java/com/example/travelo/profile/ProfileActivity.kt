@@ -1,7 +1,9 @@
 package com.example.travelo.profile
 
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -13,6 +15,7 @@ import com.example.travelo.BaseActivity
 import com.example.travelo.QApp
 import com.example.travelo.R
 import com.example.travelo.models.Route
+import com.example.travelo.models.Tour
 import com.example.travelo.models.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -33,6 +36,10 @@ class ProfileActivity : BaseActivity() {
         }
         profile_friends_fab.setOnClickListener {
             currentPage = "users"
+            initRecyclerView()
+        }
+        profile_tour_fab.setOnClickListener{
+            currentPage = "tours"
             initRecyclerView()
         }
     }
@@ -77,6 +84,14 @@ class ProfileActivity : BaseActivity() {
                             val item = it.getValue(User::class.java)
                             items.add(item!!)
                             recyclerView.adapter = FriendsRecyclerViewAdapter(this@ProfileActivity, items)
+                        }
+                    }
+                    "tours" -> {
+                        val items = arrayListOf<Tour>()
+                        dataSnapshot.child("tours").children.forEach {
+                            val item = it.getValue(Tour::class.java)
+                            items.add(item!!)
+                            recyclerView.adapter = TourRecyclerViewAdapter(this@ProfileActivity, items)
                         }
                     }
                 }
