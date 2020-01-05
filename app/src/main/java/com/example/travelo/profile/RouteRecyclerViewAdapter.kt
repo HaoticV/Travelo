@@ -14,6 +14,11 @@ import kotlinx.android.synthetic.main.item_profile_route.view.*
 class RouteRecyclerViewAdapter(val context: Context, private val items: ArrayList<Any>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private val ROUTE_VIEW = 1
+    private val SECTION_VIEW = 0
+    private var lastPosition = -1
+    private var mOnItemClickListener: OnItemClickListener? = null
+    private val on_attach = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == ROUTE_VIEW) {
@@ -28,7 +33,7 @@ class RouteRecyclerViewAdapter(val context: Context, private val items: ArrayLis
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = holder.itemView
         if (items[position] is Route) {
-            var route = items[position] as Route
+            val route = items[position] as Route
             item.name.text = route.name
             item.route_distance.text = route.distanceText
             item.route_time.text = route.timeText
@@ -38,17 +43,31 @@ class RouteRecyclerViewAdapter(val context: Context, private val items: ArrayLis
                 "city" -> item.image.setImageResource(R.drawable.ic_cyclist_city)
                 "road" -> item.image.setImageResource(R.drawable.ic_cyclist_road)
             }
+            holder.itemView.like_button.setOnClickListener {
+                if (mOnItemClickListener != null) {
+                    mOnItemClickListener!!.onLikeClick(holder.itemView.like_button, route, position)
+                }
+            }
+            holder.itemView.setOnClickListener {
+                if (mOnItemClickListener != null) {
+                    mOnItemClickListener!!.onItemClick(holder.itemView, route, position)
+                }
+            }
         } else {
             val view: SectionViewHolder = holder as SectionViewHolder
-            view.title_section.text = items[position].toString()
+            view.sectionTitle.text = items[position].toString()
         }
         setAnimation(holder.itemView, position)
     }
 
-    private val ROUTE_VIEW = 1
-    private val SECTION_VIEW = 0
-    private var lastPosition = -1
-    private val on_attach = true
+    interface OnItemClickListener {
+        fun onItemClick(view: View?, obj: Route?, position: Int)
+        fun onLikeClick(view: View?, obj: Route?, position: Int)
+    }
+
+    fun setOnItemClickListener(mItemClickListener: OnItemClickListener) {
+        this.mOnItemClickListener = mItemClickListener
+    }
 
     private fun setAnimation(view: View, position: Int) {
         if (position > lastPosition) {
@@ -74,7 +93,7 @@ class RouteRecyclerViewAdapter(val context: Context, private val items: ArrayLis
     }
 
     class SectionViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        var title_section: TextView = v.findViewById(R.id.title_section)
+        var sectionTitle: TextView = v.findViewById(R.id.title_section)
 
     }
 }

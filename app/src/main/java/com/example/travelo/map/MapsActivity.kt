@@ -158,6 +158,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         if (mLocationPermissionGranted) {
             mMap.isMyLocationEnabled = true
             mMap.uiSettings.isZoomControlsEnabled = true
+            mMap.uiSettings.isMapToolbarEnabled = true
         }
         val hashMap: HashMap<String, Pair<String, LatLng>> = HashMap()
         val postListener = object : ValueEventListener {
@@ -237,6 +238,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 route_name.text = route.name
                 route_distance.text = route.distanceText
                 route_time.text = route.timeText
+                //val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getUrl(route)))
+                //intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity")
+                //startActivity(intent)
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -251,7 +255,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         mMap.setPadding(0, 0, 0, 200)
         loadImages()
-        return true
+
+        return false
     }
 
     private fun loadImages() {

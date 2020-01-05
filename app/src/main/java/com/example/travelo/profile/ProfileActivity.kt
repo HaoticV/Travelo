@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
@@ -19,6 +20,7 @@ import com.example.travelo.R
 import com.example.travelo.database.DatabaseUtils
 import com.example.travelo.models.Route
 import com.example.travelo.models.User
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -30,6 +32,8 @@ import kotlinx.android.synthetic.main.activity_profile_toolbar_collapse.*
 
 class ProfileActivity : BaseActivity() {
     private var currentPage = ""
+    private lateinit var mRoutesAdapter: RouteRecyclerViewAdapter
+    private lateinit var mFriendsAdapter: FriendsRecyclerViewAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_toolbar_collapse)
@@ -122,14 +126,21 @@ class ProfileActivity : BaseActivity() {
                             val node = dataSnapshot.child("routes").child(it.value.toString())
                             items.add(node.getValue(Route::class.java)!!)
                         }
-                        recyclerView.adapter = RouteRecyclerViewAdapter(this@ProfileActivity, items)
+                        items.add("Polecane trasy")
+                        dataSnapshot.child("routes").children.forEach {
+                            items.add(it.getValue(Route::class.java)!!)
+                        }
+                        mRoutesAdapter = RouteRecyclerViewAdapter(this@ProfileActivity, items)
+                        recyclerView.adapter = mRoutesAdapter
+                        setUpOnClickListener()
                     }
                     "users" -> {
                         val items = arrayListOf<User>()
                         dataSnapshot.child("users").children.forEach {
                             val item = it.getValue(User::class.java)
                             items.add(item!!)
-                            recyclerView.adapter = FriendsRecyclerViewAdapter(this@ProfileActivity, items)
+                            mFriendsAdapter = FriendsRecyclerViewAdapter(this@ProfileActivity, items)
+                            recyclerView.adapter = mFriendsAdapter
                         }
                     }
                 }
@@ -145,6 +156,19 @@ class ProfileActivity : BaseActivity() {
         }
 
         QApp.fData.reference.addListenerForSingleValueEvent(routesListener)
+    }
+
+    private fun setUpOnClickListener() {
+        mRoutesAdapter.setOnItemClickListener(object : RouteRecyclerViewAdapter.OnItemClickListener {
+            override fun onItemClick(view: View?, obj: Route?, position: Int) {
+                Snackbar.make(parent_view, "Item " + obj!!.name + " clicked", Snackbar.LENGTH_SHORT).show()
+            }
+
+            override fun onLikeClick(view: View?, obj: Route?, position: Int) {
+                Snackbar.make(parent_view, "LIKE!!", Snackbar.LENGTH_SHORT).show()
+            }
+
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
