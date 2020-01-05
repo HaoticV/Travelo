@@ -40,7 +40,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="@dimen/spacing_medium"
+                        android:layout_margin="@dimen/spacing_middle"
                         android:maxLines="3"
                         android:text="Wspólna wycieczka po okolicach"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -56,6 +56,7 @@
                     <LinearLayout
                         android:layout_width="80dp"
                         android:layout_height="wrap_content"
+                        android:layout_gravity=""
                         android:layout_margin="@dimen/spacing_medium"
                         android:gravity="right"
                         android:orientation="horizontal">
@@ -66,8 +67,7 @@
                             android:layout_height="wrap_content"
                             android:maxLines="2"
                             android:text="Wycieczka:"
-                            android:textColor="@color/grey_40"
-                            android:textStyle="bold" />
+                            android:textColor="@color/grey_40" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -79,7 +79,7 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/spacing_small"
+                            android:layout_margin="@dimen/spacing_medium"
                             android:orientation="horizontal">
 
 
@@ -95,10 +95,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:text="12:30"
-                                android:textStyle="bold" />
+                                android:text="12:30" />
 
                             <ImageView
+                                android:layout_marginLeft="@dimen/spacing_medium"
                                 android:id="@+id/imageView9"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
@@ -110,14 +110,13 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:text="01.02.2020"
-                                android:textStyle="bold" />
+                                android:text="01.02.2020" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/spacing_small"
+                            android:layout_margin="@dimen/spacing_medium"
                             android:orientation="horizontal">
 
                             <ImageView
@@ -132,8 +131,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:text="Liczba uczestników: 5"
-                                android:textStyle="bold" />
+                                android:text="Liczba uczestników: 5" />
                         </LinearLayout>
 
                         <View
@@ -161,8 +159,7 @@
                             android:layout_height="wrap_content"
                             android:maxLines="2"
                             android:text="Trasa:"
-                            android:textColor="@color/grey_40"
-                            android:textStyle="bold" />
+                            android:textColor="@color/grey_40" />
 
 
                     </LinearLayout>
@@ -187,7 +184,7 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/spacing_small"
+                            android:layout_margin="@dimen/spacing_medium"
                             android:orientation="horizontal">
 
                             <ImageView
@@ -202,14 +199,13 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:text="Trasa górska"
-                                android:textStyle="bold" />
+                                android:text="Trasa górska" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_margin="@dimen/spacing_small">
+                            android:layout_margin="@dimen/spacing_medium">
 
                             <ImageView
                                 android:id="@+id/imageView3"
@@ -223,10 +219,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:text="30min"
-                                android:textStyle="bold" />
+                                android:text="30min" />
 
                             <ImageView
+                                android:layout_marginLeft="@dimen/spacing_medium"
                                 android:id="@+id/imageView4"
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
@@ -238,8 +234,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:text="30km"
-                                android:textStyle="bold" />
+                                android:text="30km" />
                         </LinearLayout>
 
 
