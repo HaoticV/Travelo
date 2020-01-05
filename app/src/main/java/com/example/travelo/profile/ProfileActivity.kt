@@ -19,6 +19,7 @@ import com.example.travelo.QApp
 import com.example.travelo.R
 import com.example.travelo.database.DatabaseUtils
 import com.example.travelo.models.Route
+import com.example.travelo.models.Tour
 import com.example.travelo.models.User
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DataSnapshot
@@ -34,6 +35,7 @@ class ProfileActivity : BaseActivity() {
     private var currentPage = ""
     private lateinit var mRoutesAdapter: RouteRecyclerViewAdapter
     private lateinit var mFriendsAdapter: FriendsRecyclerViewAdapter
+    private lateinit var mToursAdapter: TourRecyclerViewAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_toolbar_collapse)
@@ -47,8 +49,9 @@ class ProfileActivity : BaseActivity() {
             currentPage = "users"
             initRecyclerView()
         }
-        profile_stats_fab.setOnClickListener {
-            //QApp.fData.reference.child("users").child(QApp.fAuth.uid.toString()).child("likedRoutes").push().setValue("-LvVQdHuv-3GDS89YV")
+        profile_tour_fab.setOnClickListener{
+            currentPage = "tours"
+            initRecyclerView()
         }
         circle_image_view.setOnLongClickListener { editProfilePicture() }
     }
@@ -141,6 +144,15 @@ class ProfileActivity : BaseActivity() {
                             items.add(item!!)
                             mFriendsAdapter = FriendsRecyclerViewAdapter(this@ProfileActivity, items)
                             recyclerView.adapter = mFriendsAdapter
+                        }
+                    }
+                    "tours" -> {
+                        val items = arrayListOf<Tour>()
+                        dataSnapshot.child("tours").children.forEach {
+                            val item = it.getValue(Tour::class.java)
+                            items.add(item!!)
+                            mToursAdapter = TourRecyclerViewAdapter(this@ProfileActivity, items)
+                            recyclerView.adapter = mToursAdapter
                         }
                     }
                 }
