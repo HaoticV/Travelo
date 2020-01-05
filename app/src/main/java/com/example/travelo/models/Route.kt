@@ -3,10 +3,11 @@ package com.example.travelo.models
 import java.io.Serializable
 
 data class Route(
+    val id: String = "",
     var name: String = "",
-    var origin: LatLang = LatLang(0.0,0.0),
+    var origin: LatLang = LatLang(0.0, 0.0),
     var waypoints: List<LatLang> = listOf(),
-    var destination: LatLang = LatLang(0.0,0.0),
+    var destination: LatLang = LatLang(0.0, 0.0),
     var bounds: List<LatLang> = listOf(),
     var mode: String = "bicycling",
     var type: String = "",

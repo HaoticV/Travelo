@@ -43,11 +43,6 @@ class RouteRecyclerViewAdapter(val context: Context, private val items: ArrayLis
                 "city" -> item.image.setImageResource(R.drawable.ic_cyclist_city)
                 "road" -> item.image.setImageResource(R.drawable.ic_cyclist_road)
             }
-            holder.itemView.like_button.setOnClickListener {
-                if (mOnItemClickListener != null) {
-                    mOnItemClickListener!!.onLikeClick(holder.itemView.like_button, route, position)
-                }
-            }
             holder.itemView.setOnClickListener {
                 if (mOnItemClickListener != null) {
                     mOnItemClickListener!!.onItemClick(holder.itemView, route, position)
@@ -62,7 +57,6 @@ class RouteRecyclerViewAdapter(val context: Context, private val items: ArrayLis
 
     interface OnItemClickListener {
         fun onItemClick(view: View?, obj: Route?, position: Int)
-        fun onLikeClick(view: View?, obj: Route?, position: Int)
     }
 
     fun setOnItemClickListener(mItemClickListener: OnItemClickListener) {
