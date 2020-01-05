@@ -177,9 +177,8 @@ class ProfileActivity : BaseActivity() {
             }
 
             override fun onLikeClick(view: View?, obj: Route?, position: Int) {
-                Snackbar.make(parent_view, "LIKE!!", Snackbar.LENGTH_SHORT).show()
+                view?.isSelected = !view?.isSelected!!
             }
-
         })
     }
 
