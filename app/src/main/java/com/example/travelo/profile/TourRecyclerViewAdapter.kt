@@ -1,11 +1,13 @@
 package com.example.travelo.profile
 
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.travelo.R
 import com.example.travelo.lib.ItemAnimation
 import com.example.travelo.models.Route
@@ -26,9 +28,16 @@ class TourRecyclerViewAdapter(val context: Context, private val items: ArrayList
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = holder.itemView
         item.tour_name.text = items[position].first.name
+
+        items[position].third.forEach {
+            if (items[position].first.host.equals(it.id)) {
+                Glide.with(context).load(it.image).into(item.host_profile_image)
+            }
+        }
+
         item.tour_date.text = items[position].first.date
         item.tour_date_time.text = items[position].first.dateTime
-        item.number_of_participants.text = items[position].third.size.toString()
+        item.number_of_participants.text = "Liczba uczestników: " + items[position].third.size.toString()
         item.route_name.text = items[position].second.name
         when (items[position].second.type) {
             "mountain" -> {

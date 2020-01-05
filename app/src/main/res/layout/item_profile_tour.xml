@@ -31,10 +31,10 @@
                     android:padding="@dimen/spacing_large">
 
 
-                    <ImageView
-                        android:id="@+id/profile_image"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                    <com.mikhaellopez.circularimageview.CircularImageView
+                        android:id="@+id/host_profile_image"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
                         android:src="@drawable/photo_female_1" />
 
 
@@ -46,6 +46,7 @@
                         android:layout_margin="@dimen/spacing_medium"
                         android:maxLines="3"
                         android:text="Wspólna wycieczka po okolicach"
+                        android:textStyle="bold"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/grey_90" />
 
@@ -70,7 +71,7 @@
                             android:layout_height="wrap_content"
                             android:maxLines="2"
                             android:text="Wycieczka:"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textStyle="bold"
                             android:textColor="@color/grey_40" />
 
 
@@ -101,7 +102,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:text="12:30" />
+                                android:text="12:30"
+                                android:textStyle="bold" />
 
 
                             <ImageView
@@ -116,7 +118,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:text="01.02.2020" />
+                                android:text="01.02.2020"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -138,6 +141,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
+                                android:textStyle="bold"
                                 android:text="Liczba uczestników: 5" />
                         </LinearLayout>
 
@@ -166,7 +170,7 @@
                             android:layout_height="wrap_content"
                             android:maxLines="2"
                             android:text="Trasa:"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textStyle="bold"
                             android:textColor="@color/grey_40" />
 
 
@@ -186,6 +190,7 @@
                             android:maxLines="3"
                             android:text="Wokół Jaca chałupy"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textStyle="bold"
                             android:textColor="@color/grey_90" />
 
                         <LinearLayout
@@ -206,6 +211,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
+                                android:textStyle="bold"
                                 android:text="Trasa górska" />
                         </LinearLayout>
 
@@ -226,6 +232,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
+                                android:textStyle="bold"
                                 android:text="30min" />
 
                             <ImageView
@@ -240,6 +247,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
+                                android:textStyle="bold"
                                 android:text="30km" />
                         </LinearLayout>
 
