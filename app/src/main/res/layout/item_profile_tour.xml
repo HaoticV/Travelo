@@ -23,20 +23,17 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="@dimen/spacing_large">
 
-
                     <com.mikhaellopez.circularimageview.CircularImageView
                         android:id="@+id/host_profile_image"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         android:src="@drawable/photo_female_1" />
-
 
                     <TextView
                         android:id="@+id/tour_name"
@@ -46,12 +43,10 @@
                         android:layout_margin="@dimen/spacing_medium"
                         android:maxLines="3"
                         android:text="Wspólna wycieczka po okolicach"
-                        android:textStyle="bold"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textColor="@color/grey_90" />
-
+                        android:textColor="@color/grey_90"
+                        android:textStyle="bold" />
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -71,10 +66,8 @@
                             android:layout_height="wrap_content"
                             android:maxLines="2"
                             android:text="Wycieczka:"
-                            android:textStyle="bold"
-                            android:textColor="@color/grey_40" />
-
-
+                            android:textColor="@color/grey_40"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -105,7 +98,6 @@
                                 android:text="12:30"
                                 android:textStyle="bold" />
 
-
                             <ImageView
                                 android:id="@+id/imageView9"
                                 android:layout_width="30dp"
@@ -120,7 +112,6 @@
                                 android:layout_margin="@dimen/spacing_small"
                                 android:text="01.02.2020"
                                 android:textStyle="bold" />
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -141,8 +132,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:textStyle="bold"
-                                android:text="Liczba uczestników: 5" />
+                                android:text="Liczba uczestników: 5"
+                                android:textStyle="bold" />
                         </LinearLayout>
 
                         <View
@@ -170,8 +161,8 @@
                             android:layout_height="wrap_content"
                             android:maxLines="2"
                             android:text="Trasa:"
-                            android:textStyle="bold"
-                            android:textColor="@color/grey_40" />
+                            android:textColor="@color/grey_40"
+                            android:textStyle="bold" />
 
 
                     </LinearLayout>
@@ -190,8 +181,8 @@
                             android:maxLines="3"
                             android:text="Wokół Jaca chałupy"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                            android:textStyle="bold"
-                            android:textColor="@color/grey_90" />
+                            android:textColor="@color/grey_90"
+                            android:textStyle="bold" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -211,8 +202,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:textStyle="bold"
-                                android:text="Trasa górska" />
+                                android:text="Trasa górska"
+                                android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -232,8 +223,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:textStyle="bold"
-                                android:text="30min" />
+                                android:text="30min"
+                                android:textStyle="bold" />
 
                             <ImageView
                                 android:id="@+id/imageView4"
@@ -247,8 +238,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_margin="@dimen/spacing_small"
-                                android:textStyle="bold"
-                                android:text="30km" />
+                                android:text="30km"
+                                android:textStyle="bold" />
                         </LinearLayout>
 
 
