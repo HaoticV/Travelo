@@ -108,12 +108,18 @@ class ProfileActivity : BaseActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 when (currentPage) {
                     "routes" -> {
-                        val items = arrayListOf<Route>()
+                        val items = arrayListOf<Any>()
+                        items.add("Twoje trasy")
                         dataSnapshot.child("routes").children.forEach {
                             val item = it.getValue(Route::class.java)
                             items.add(item!!)
-                            recyclerView.adapter = RouteRecyclerViewAdapter(this@ProfileActivity, items)
                         }
+                        items.add("Ulubione Trasy")
+                        dataSnapshot.child("routes").children.forEach {
+                            val item = it.getValue(Route::class.java)
+                            items.add(item!!)
+                        }
+                        recyclerView.adapter = RouteRecyclerViewAdapter(this@ProfileActivity, items)
                     }
                     "users" -> {
                         val items = arrayListOf<User>()
@@ -136,7 +142,7 @@ class ProfileActivity : BaseActivity() {
             }
         }
 
-        QApp.fData.reference.addValueEventListener(routesListener)
+        QApp.fData.reference.addListenerForSingleValueEvent(routesListener)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
