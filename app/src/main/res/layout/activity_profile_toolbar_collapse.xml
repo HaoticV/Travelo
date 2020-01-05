@@ -136,7 +136,7 @@
                 android:orientation="vertical">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/profile_stats_fab"
+                    android:id="@+id/profile_tour_fab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
@@ -144,13 +144,13 @@
                     app:elevation="1dp"
                     app:fabSize="normal"
                     app:rippleColor="@color/colorPrimary"
-                    app:srcCompat="@drawable/ic_profile_stats" />
+                    app:srcCompat="@drawable/ic_profile_tours" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_medium"
-                    android:text="Statystyki"
+                    android:text="Wycieczki"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
                     android:textColor="@color/quantum_black_text" />
 
