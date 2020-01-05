@@ -55,6 +55,7 @@ dependencies {
 
     implementation 'com.balysv:material-ripple:1.0.2'
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
 }
 
 apply plugin: 'com.google.gms.google-services'

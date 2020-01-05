@@ -52,6 +52,9 @@
         <activity android:name="com.example.travelo.auth.SignUpActivity" />
         <activity
             android:name="com.example.travelo.profile.ProfileActivity"/>
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
     </application>
 
 </manifest>
