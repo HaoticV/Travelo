@@ -104,7 +104,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         initBottomSheet()
 
         FirebaseAuth.getInstance().addAuthStateListener {
-            if (QApp.fAuth.currentUser != null) {
+            if (QApp.fAuth.currentUser != null && QApp.currentUser == null) {
                 getCurrentUser()
             }
         }
@@ -244,6 +244,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 route_time.text = route.timeText
                 if (QApp.currentUser?.likedRoutes?.containsValue(markerId)!!)
                     imageLike.setImageResource(R.drawable.ic_heart_red)
+                else
+                    imageLike.setImageResource(R.drawable.ic_heart_white)
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -268,8 +270,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         toolbar.title = "Podgląd trasy"
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener { finish() }
+        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         mMap.clear()
         markerId = route.id
+
         var icon: Int? = null
         when (route.type) {
             "road" -> icon = R.drawable.ic_marker_cyclist_road

@@ -111,7 +111,8 @@ class ProfileActivity : BaseActivity() {
             }
         }
         if (requestCode == 2137) {
-            initRecyclerView()
+            if (QApp.currentUser?.id == QApp.fAuth.currentUser?.uid)
+                initRecyclerView()
         }
     }
 
@@ -150,8 +151,8 @@ class ProfileActivity : BaseActivity() {
                     }
                     "users" -> {
                         val items = arrayListOf<User>()
-                        dataSnapshot.child("users").children.forEach {
-                            val item = it.getValue(User::class.java)
+                        dataSnapshot.child("users").child(QApp.currentUser?.id!!).child("friends").children.forEach {
+                            val item = dataSnapshot.child("users").child(it.value as String).getValue(User::class.java)
                             val user: User = item!!
                             if (!QApp.currentUser?.id.equals(user.id)) {
                                 items.add(item)
