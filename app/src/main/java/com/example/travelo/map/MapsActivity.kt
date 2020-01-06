@@ -283,6 +283,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         ).tag = route.id
         if (QApp.currentUser?.likedRoutes?.containsValue(markerId)!!)
             imageLike.setImageResource(R.drawable.ic_heart_red)
+        else
+            imageLike.setImageResource(R.drawable.ic_heart_white)
         FetchURL(this@MapsActivity).execute(getUrl(route))
         mMap.moveCamera(
             CameraUpdateFactory.newLatLngBounds(
