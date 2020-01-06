@@ -263,6 +263,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         return false
     }
 
+    //zalać betonem
     private fun routeDetails() {
         val route = intent.extras?.get("route") as Route
         toolbar.title = "Podgląd trasy"

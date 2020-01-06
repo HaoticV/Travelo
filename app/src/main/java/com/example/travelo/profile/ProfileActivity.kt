@@ -2,6 +2,7 @@ package com.example.travelo.profile
 
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -37,6 +38,9 @@ class ProfileActivity : BaseActivity() {
     private lateinit var mFriendsAdapter: FriendsRecyclerViewAdapter
     private lateinit var mToursAdapter: TourRecyclerViewAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (intent.hasExtra("currentUser")) {
+            QApp.currentUser = intent.extras?.get("currentUser") as User
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_toolbar_collapse)
         StatusBarUtil.setTransparent(this)
@@ -53,7 +57,11 @@ class ProfileActivity : BaseActivity() {
             currentPage = "tours"
             initRecyclerView()
         }
-        circle_image_view.setOnLongClickListener { editProfilePicture() }
+        if (QApp.currentUser?.id.equals(QApp.fAuth.currentUser?.uid)) {
+            circle_image_view.setOnLongClickListener {
+                editProfilePicture()
+            }
+        }
     }
 
     private fun initToolbar() {
@@ -120,12 +128,12 @@ class ProfileActivity : BaseActivity() {
                     "routes" -> {
                         val items = arrayListOf<Any>()
                         items.add("Twoje trasy")
-                        dataSnapshot.child("users").child(QApp.fAuth.currentUser?.uid!!).child("ownRoutes").children.forEach {
+                        dataSnapshot.child("users").child(QApp.currentUser?.id!!).child("ownRoutes").children.forEach {
                             val node = dataSnapshot.child("routes").child(it.value.toString())
                             items.add(node.getValue(Route::class.java)!!)
                         }
                         items.add("Ulubione Trasy")
-                        dataSnapshot.child("users").child(QApp.fAuth.currentUser?.uid!!).child("likedRoutes").children.forEach {
+                        dataSnapshot.child("users").child(QApp.currentUser?.id!!).child("likedRoutes").children.forEach {
                             val node = dataSnapshot.child("routes").child(it.value.toString())
                             items.add(node.getValue(Route::class.java)!!)
                         }
@@ -135,18 +143,19 @@ class ProfileActivity : BaseActivity() {
                         }
                         mRoutesAdapter = RouteRecyclerViewAdapter(this@ProfileActivity, items)
                         recyclerView.adapter = mRoutesAdapter
-                        setUpOnClickListener()
+                        setUpRoutesOnClickListener()
                     }
                     "users" -> {
                         val items = arrayListOf<User>()
                         dataSnapshot.child("users").children.forEach {
                             val item = it.getValue(User::class.java)
-                            val user: User = it.getValue(User::class.java)!!
+                            val user: User = item!!
                             if (!QApp.currentUser?.id.equals(user.id)) {
-                                items.add(item!!)
+                                items.add(item)
                             }
                             mFriendsAdapter = FriendsRecyclerViewAdapter(this@ProfileActivity, items)
                             recyclerView.adapter = mFriendsAdapter
+                            setUpFriendsOnClickListener()
                         }
                     }
                     "tours" -> {
@@ -178,11 +187,21 @@ class ProfileActivity : BaseActivity() {
         QApp.fData.reference.addListenerForSingleValueEvent(routesListener)
     }
 
-    private fun setUpOnClickListener() {
+    private fun setUpRoutesOnClickListener() {
         mRoutesAdapter.setOnItemClickListener(object : RouteRecyclerViewAdapter.OnItemClickListener {
             override fun onItemClick(view: View?, obj: Route?, position: Int) {
                 val intent = Intent(this@ProfileActivity, MapsActivity::class.java)
                 intent.putExtra("route", obj)
+                startActivity(intent)
+            }
+        })
+    }
+
+    private fun setUpFriendsOnClickListener() {
+        mFriendsAdapter.setOnItemClickListener(object : FriendsRecyclerViewAdapter.OnItemClickListener {
+            override fun onItemClick(view: View?, obj: User?, position: Int) {
+                val intent = Intent(this@ProfileActivity, ProfileActivity::class.java)
+                intent.putExtra("currentUser", obj)
                 startActivity(intent)
             }
         })
@@ -193,5 +212,22 @@ class ProfileActivity : BaseActivity() {
             finish()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        QApp.currentUser = null
+        val userListener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                Log.w(ContentValues.TAG, "loadPost:onCancelled", p0.toException())
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.exists()) {
+                    QApp.currentUser = p0.getValue(User::class.java)!!
+                }
+            }
+        }
+        QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).addListenerForSingleValueEvent(userListener)
     }
 }
