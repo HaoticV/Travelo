@@ -239,13 +239,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                         100
                     )
                 )
-                route_name.text = route.name
-                route_distance.text = route.distanceText
-                route_time.text = route.timeText
-                if (QApp.currentUser?.likedRoutes?.containsValue(markerId)!!)
-                    imageLike.setImageResource(R.drawable.ic_heart_red)
-                else
-                    imageLike.setImageResource(R.drawable.ic_heart_white)
+                populateBottomSheet(route)
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -285,10 +279,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 LatLng(route.origin.latitude, route.origin.longitude)
             )
         ).tag = route.id
-        if (QApp.currentUser?.likedRoutes?.containsValue(markerId)!!)
-            imageLike.setImageResource(R.drawable.ic_heart_red)
-        else
-            imageLike.setImageResource(R.drawable.ic_heart_white)
         FetchURL(this@MapsActivity).execute(getUrl(route))
         mMap.moveCamera(
             CameraUpdateFactory.newLatLngBounds(
@@ -301,10 +291,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 100
             )
         )
-        route_name.text = route.name
-        route_distance.text = route.distanceText
-        route_time.text = route.timeText
-        loadImages()
+        populateBottomSheet(route)
         mMap.setOnMarkerClickListener(this)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         mMap.setPadding(0, 0, 0, 300)
@@ -561,6 +548,38 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         }
     }
 
+    private fun populateBottomSheet(route: Route) {
+        var likedRoutesKeys: ArrayList<String> = arrayListOf()
+        var likedRoutesValues: ArrayList<String> = arrayListOf()
+        val likedRoutesListener = object : ValueEventListener {
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                likedRoutesKeys = arrayListOf()
+                likedRoutesValues = arrayListOf()
+                dataSnapshot.children.forEach {
+                    likedRoutesKeys.add(it.key!!)
+                    likedRoutesValues.add(it.value as String)
+                }
+                if (likedRoutesValues.contains(markerId))
+                    imageLike.setImageResource(R.drawable.ic_heart_red)
+                else
+                    imageLike.setImageResource(R.drawable.ic_heart_white)
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }
+        QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).child("likedRoutes").addValueEventListener(likedRoutesListener)
+
+        loadImages()
+        route_name.text = route.name
+        route_distance.text = route.distanceText
+        route_time.text = route.timeText
+
+        like_layout.setOnClickListener { likeRoute(likedRoutesKeys, likedRoutesValues) }
+    }
+
     private fun initBottomSheet() { // get the bottom sheet view
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -593,27 +612,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
         ViewAnimation.initShowOut(findViewById(R.id.lyt_mic))
         ViewAnimation.initShowOut(findViewById(R.id.lyt_call))
-
-        var likedRoutesKeys: ArrayList<String> = arrayListOf()
-        var likedRoutesValues: ArrayList<String> = arrayListOf()
-        val likedRoutesListener = object : ValueEventListener {
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                likedRoutesKeys = arrayListOf()
-                likedRoutesValues = arrayListOf()
-                dataSnapshot.children.forEach {
-                    likedRoutesKeys.add(it.key!!)
-                    likedRoutesValues.add(it.value as String)
-                }
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        }
-        QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).child("likedRoutes").addValueEventListener(likedRoutesListener)
-
-        like_layout.setOnClickListener { likeRoute(likedRoutesKeys, likedRoutesValues) }
 
         fab_add.setOnClickListener { view -> toggleFabMode(view) }
         fab_add_with_camera.setOnClickListener {
