@@ -77,6 +77,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private var mLocationPermissionGranted: Boolean = false
     private var rotate = false
     private var images = arrayListOf<Any>()
+    var likedRoutesValues: ArrayList<String> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -242,6 +243,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 route_name.text = route.name
                 route_distance.text = route.distanceText
                 route_time.text = route.timeText
+                if (likedRoutesValues.contains(markerId))
+                    imageLike.setImageResource(R.drawable.ic_heart_red)
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -583,6 +586,26 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         ViewAnimation.initShowOut(findViewById(R.id.lyt_mic))
         ViewAnimation.initShowOut(findViewById(R.id.lyt_call))
 
+        var likedRoutesKeys: ArrayList<String> = arrayListOf()
+        val likedRoutesListener = object : ValueEventListener {
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                likedRoutesKeys = arrayListOf()
+                likedRoutesValues = arrayListOf()
+                dataSnapshot.children.forEach {
+                    likedRoutesKeys.add(it.key!!)
+                    likedRoutesValues.add(it.value as String)
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        }
+        QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).child("likedRoutes").addValueEventListener(likedRoutesListener)
+
+        like_layout.setOnClickListener { likeRoute(likedRoutesKeys, likedRoutesValues) }
+
         fab_add.setOnClickListener { view -> toggleFabMode(view) }
         fab_add_with_camera.setOnClickListener {
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -597,6 +620,18 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 Intent.createChooser(intent, "Wybierz zdjęcie"),
                 REQUEST_PICK_IMAGE
             )
+        }
+    }
+
+    private fun likeRoute(likedRoutesKeys: ArrayList<String>, likedRoutesValues: ArrayList<String>) {
+        if (likedRoutesValues.contains(markerId)) {
+            val position = likedRoutesValues.indexOf(markerId)
+            val routeKey = likedRoutesKeys[position]
+            imageLike.setImageResource(R.drawable.ic_heart_white)
+            QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).child("likedRoutes").child(routeKey).removeValue()
+        } else {
+            QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).child("likedRoutes").push().setValue(markerId)
+            imageLike.setImageResource(R.drawable.ic_heart_red)
         }
     }
 
