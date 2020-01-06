@@ -77,7 +77,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private var mLocationPermissionGranted: Boolean = false
     private var rotate = false
     private var images = arrayListOf<Any>()
-    var likedRoutesValues: ArrayList<String> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,7 +124,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             }
 
         }
-        QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).addValueEventListener(userListener)
+        QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).addListenerForSingleValueEvent(userListener)
     }
 
     private fun updateUserUI() {
@@ -243,7 +242,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 route_name.text = route.name
                 route_distance.text = route.distanceText
                 route_time.text = route.timeText
-                if (likedRoutesValues.contains(markerId))
+                if (QApp.currentUser?.likedRoutes?.containsValue(markerId)!!)
                     imageLike.setImageResource(R.drawable.ic_heart_red)
             }
 
@@ -281,6 +280,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 LatLng(route.origin.latitude, route.origin.longitude)
             )
         ).tag = route.id
+        if (QApp.currentUser?.likedRoutes?.containsValue(markerId)!!)
+            imageLike.setImageResource(R.drawable.ic_heart_red)
         FetchURL(this@MapsActivity).execute(getUrl(route))
         mMap.moveCamera(
             CameraUpdateFactory.newLatLngBounds(
@@ -587,6 +588,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         ViewAnimation.initShowOut(findViewById(R.id.lyt_call))
 
         var likedRoutesKeys: ArrayList<String> = arrayListOf()
+        var likedRoutesValues: ArrayList<String> = arrayListOf()
         val likedRoutesListener = object : ValueEventListener {
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {

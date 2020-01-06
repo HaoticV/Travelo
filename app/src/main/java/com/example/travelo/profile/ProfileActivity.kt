@@ -40,7 +40,6 @@ class ProfileActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_toolbar_collapse)
         StatusBarUtil.setTransparent(this)
-        initToolbar()
         profile_collapsing_routes_fab.setOnClickListener {
             currentPage = "routes"
             initRecyclerView()
@@ -54,6 +53,7 @@ class ProfileActivity : BaseActivity() {
             initRecyclerView()
         }
         circle_image_view.setOnLongClickListener { editProfilePicture() }
+        initToolbar()
     }
 
     private fun initToolbar() {
@@ -102,6 +102,9 @@ class ProfileActivity : BaseActivity() {
                 val error = result.error
             }
         }
+        if (requestCode == 2137) {
+            initRecyclerView()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -135,6 +138,7 @@ class ProfileActivity : BaseActivity() {
                         }
                         mRoutesAdapter = RouteRecyclerViewAdapter(this@ProfileActivity, items)
                         recyclerView.adapter = mRoutesAdapter
+                        (recyclerView.adapter as RouteRecyclerViewAdapter).notifyDataSetChanged()
                         setUpOnClickListener()
                     }
                     "users" -> {
@@ -183,15 +187,20 @@ class ProfileActivity : BaseActivity() {
             override fun onItemClick(view: View?, obj: Route?, position: Int) {
                 val intent = Intent(this@ProfileActivity, MapsActivity::class.java)
                 intent.putExtra("route", obj)
-                startActivity(intent)
+                startActivityForResult(intent, 2137)
             }
         })
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.home) {
             finish()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 }
