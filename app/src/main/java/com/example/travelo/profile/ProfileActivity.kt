@@ -58,9 +58,12 @@ class ProfileActivity : BaseActivity() {
             initRecyclerView()
         }
         if (QApp.currentUser?.id.equals(QApp.fAuth.currentUser?.uid)) {
+            add_friend_button.hide()
             circle_image_view.setOnLongClickListener {
                 editProfilePicture()
             }
+        } else {
+            add_friend_button.show()
         }
     }
 
