@@ -141,7 +141,10 @@ class ProfileActivity : BaseActivity() {
                         val items = arrayListOf<User>()
                         dataSnapshot.child("users").children.forEach {
                             val item = it.getValue(User::class.java)
-                            items.add(item!!)
+                            val user: User = it.getValue(User::class.java)!!
+                            if (!QApp.currentUser?.id.equals(user.id)) {
+                                items.add(item!!)
+                            }
                             mFriendsAdapter = FriendsRecyclerViewAdapter(this@ProfileActivity, items)
                             recyclerView.adapter = mFriendsAdapter
                         }

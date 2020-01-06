@@ -85,8 +85,8 @@
 
                             <ImageView
                                 android:id="@+id/imageView8"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
                                 app:srcCompat="@drawable/ic_profile_date_time" />
 
                             <TextView
@@ -98,10 +98,10 @@
                                 android:text="12:30" />
 
                             <ImageView
-                                android:layout_marginLeft="@dimen/spacing_medium"
                                 android:id="@+id/imageView9"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_marginLeft="@dimen/spacing_medium"
                                 app:srcCompat="@drawable/ic_profile_date_calendar" />
 
                             <TextView
@@ -121,8 +121,8 @@
 
                             <ImageView
                                 android:id="@+id/imageView11"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
                                 app:srcCompat="@drawable/ic_profile_users" />
 
                             <TextView
@@ -189,8 +189,8 @@
 
                             <ImageView
                                 android:id="@+id/ic_route_type"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
                                 app:srcCompat="@drawable/ic_cyclist_mountain" />
 
                             <TextView
@@ -209,8 +209,8 @@
 
                             <ImageView
                                 android:id="@+id/imageView3"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
                                 app:srcCompat="@drawable/ic_sheet_map_stopwatch" />
 
                             <TextView
@@ -222,10 +222,10 @@
                                 android:text="30min" />
 
                             <ImageView
-                                android:layout_marginLeft="@dimen/spacing_medium"
                                 android:id="@+id/imageView4"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_marginLeft="@dimen/spacing_medium"
                                 app:srcCompat="@drawable/ic_sheet_map_route" />
 
                             <TextView

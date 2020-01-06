@@ -5,6 +5,7 @@ import java.io.Serializable
 data class Route(
     val id: String = "",
     var name: String = "",
+    var description: String = "",
     var origin: LatLang = LatLang(0.0, 0.0),
     var waypoints: List<LatLang> = listOf(),
     var destination: LatLang = LatLang(0.0, 0.0),

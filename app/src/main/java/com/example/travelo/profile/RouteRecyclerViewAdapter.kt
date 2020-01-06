@@ -35,6 +35,7 @@ class RouteRecyclerViewAdapter(val context: Context, private val items: ArrayLis
         if (items[position] is Route) {
             val route = items[position] as Route
             item.name.text = route.name
+            item.description.text = route.description
             item.route_distance.text = route.distanceText
             item.route_time.text = route.timeText
 
