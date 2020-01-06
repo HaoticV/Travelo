@@ -18,10 +18,10 @@ import com.example.travelo.BaseActivity
 import com.example.travelo.QApp
 import com.example.travelo.R
 import com.example.travelo.database.DatabaseUtils
+import com.example.travelo.map.MapsActivity
 import com.example.travelo.models.Route
 import com.example.travelo.models.Tour
 import com.example.travelo.models.User
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -181,7 +181,9 @@ class ProfileActivity : BaseActivity() {
     private fun setUpOnClickListener() {
         mRoutesAdapter.setOnItemClickListener(object : RouteRecyclerViewAdapter.OnItemClickListener {
             override fun onItemClick(view: View?, obj: Route?, position: Int) {
-                Snackbar.make(parent_view, "Item " + obj!!.name + " clicked", Snackbar.LENGTH_SHORT).show()
+                val intent = Intent(this@ProfileActivity, MapsActivity::class.java)
+                intent.putExtra("route", obj)
+                startActivity(intent)
             }
         })
     }

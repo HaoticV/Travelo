@@ -149,6 +149,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        if (intent.hasExtra("route")) {
+            routeDetails()
+            return
+        }
         val boundsPoland = LatLngBounds(LatLng(48.844458, 13.914181), LatLng(54.972622, 23.583997))
         val boundsLublin = LatLngBounds(LatLng(51.066020, 22.340719), LatLng(51.355511, 22.742954))
         val width = resources.displayMetrics.widthPixels
@@ -253,10 +257,41 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         }
         QApp.fData.reference.addListenerForSingleValueEvent(markerListener)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        mMap.setPadding(0, 0, 0, 200)
+        mMap.setPadding(0, 0, 0, 300)
         loadImages()
 
         return false
+    }
+
+    private fun routeDetails() {
+        val route = intent.extras?.get("route") as Route
+        Toast.makeText(this, "detale trasy", Toast.LENGTH_SHORT).show()
+        mMap.clear()
+        var icon: Int? = null
+        when (route.type) {
+            "road" -> icon = R.drawable.ic_marker_cyclist_road
+            "city" -> icon = R.drawable.ic_marker_cyclist_city
+            "mountain" -> icon = R.drawable.ic_marker_cyclist_road
+        }
+        mMap.addMarker(
+            drawMarker(icon!!).position(
+                LatLng(route.origin.latitude, route.origin.longitude)
+            )
+        ).tag = route.id
+        FetchURL(this@MapsActivity).execute(getUrl(route))
+        mMap.moveCamera(
+            CameraUpdateFactory.newLatLngBounds(
+                LatLngBounds(
+                    LatLng(route.bounds[1].latitude, route.bounds[1].longitude),
+                    LatLng(route.bounds[0].latitude, route.bounds[0].longitude)
+                ),
+                resources.displayMetrics.widthPixels,
+                resources.displayMetrics.heightPixels,
+                100
+            )
+        )
+        mMap.setOnMarkerClickListener(this)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     private fun loadImages() {
@@ -295,12 +330,12 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         }
     }
 
-    override fun onTaskDone(vararg values: Any?) {
+    override fun onTaskDone(polylineOptions: PolylineOptions) {
         currentPolyline = if (::currentPolyline.isInitialized) {
             currentPolyline.remove()
-            mMap.addPolyline(values[0] as PolylineOptions?)
+            mMap.addPolyline(polylineOptions)
         } else {
-            mMap.addPolyline(values[0] as PolylineOptions?)
+            mMap.addPolyline(polylineOptions)
         }
     }
 
@@ -409,6 +444,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                     if (newState == DrawerLayout.STATE_SETTLING) {
                         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                     }
+                    mMap.setPadding(0, 0, 0, 0)
                 }
             }
         drawer.addDrawerListener(toggle)
@@ -556,7 +592,14 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 Intent.createChooser(intent, "Wybierz zdjęcie"),
                 REQUEST_PICK_IMAGE
             )
-
+        }
+        nestedScrollView.setOnTouchListener { v, event ->
+            imageSlider.parent.parent.parent.parent.requestDisallowInterceptTouchEvent(false)
+            false
+        }
+        imageSlider.setOnTouchListener { v, event ->
+            nestedScrollView.requestDisallowInterceptTouchEvent(true)
+            false
         }
     }
 
