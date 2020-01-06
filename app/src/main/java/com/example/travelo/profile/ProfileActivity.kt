@@ -141,9 +141,10 @@ class ProfileActivity : BaseActivity() {
                             val node = dataSnapshot.child("routes").child(it.value.toString())
                             items.add(node.getValue(Route::class.java)!!)
                         }
-                        items.add("Polecane trasy")
+                        items.add("Pozostałe trasy")
                         dataSnapshot.child("routes").children.forEach {
-                            items.add(it.getValue(Route::class.java)!!)
+                            if (!items.contains(it.getValue(Route::class.java)!!))
+                                items.add(it.getValue(Route::class.java)!!)
                         }
                         mRoutesAdapter = RouteRecyclerViewAdapter(this@ProfileActivity, items)
                         recyclerView.adapter = mRoutesAdapter
