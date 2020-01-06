@@ -69,8 +69,8 @@
 
                                 <ImageView
                                     android:id="@+id/imageView3"
-                                    android:layout_width="20dp"
-                                    android:layout_height="match_parent"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
                                     app:srcCompat="@drawable/ic_sheet_map_stopwatch" />
 
                                 <TextView
@@ -78,19 +78,21 @@
                                     android:layout_width="50dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="@dimen/spacing_xsmall"
+                                    android:layout_gravity="center"
                                     android:layout_marginRight="@dimen/spacing_xsmall"
                                     android:text="30min" />
 
                                 <ImageView
                                     android:id="@+id/imageView4"
-                                    android:layout_width="20dp"
-                                    android:layout_height="match_parent"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
                                     app:srcCompat="@drawable/ic_sheet_map_route" />
 
                                 <TextView
                                     android:id="@+id/route_distance"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
                                     android:layout_marginLeft="@dimen/spacing_xsmall"
                                     android:text="30km" />
                             </LinearLayout>
