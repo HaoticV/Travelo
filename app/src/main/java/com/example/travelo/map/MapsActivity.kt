@@ -149,6 +149,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        if (mLocationPermissionGranted) {
+            mMap.isMyLocationEnabled = true
+            mMap.uiSettings.isZoomControlsEnabled = true
+            mMap.uiSettings.isMapToolbarEnabled = true
+        }
         if (intent.hasExtra("route")) {
             routeDetails()
             return
@@ -159,11 +164,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         val height = resources.displayMetrics.heightPixels
         val padding = (width * 0.12).toInt()
 
-        if (mLocationPermissionGranted) {
-            mMap.isMyLocationEnabled = true
-            mMap.uiSettings.isZoomControlsEnabled = true
-            mMap.uiSettings.isMapToolbarEnabled = true
-        }
         val hashMap: HashMap<String, Pair<String, LatLng>> = HashMap()
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -242,9 +242,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 route_name.text = route.name
                 route_distance.text = route.distanceText
                 route_time.text = route.timeText
-                //val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getUrl(route)))
-                //intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity")
-                //startActivity(intent)
             }
 
             override fun onCancelled(p0: DatabaseError) {
@@ -265,8 +262,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
 
     private fun routeDetails() {
         val route = intent.extras?.get("route") as Route
-        Toast.makeText(this, "detale trasy", Toast.LENGTH_SHORT).show()
+        toolbar.title = "Podgląd trasy"
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+        toolbar.setNavigationOnClickListener { finish() }
         mMap.clear()
+        markerId = route.id
         var icon: Int? = null
         when (route.type) {
             "road" -> icon = R.drawable.ic_marker_cyclist_road
@@ -290,8 +290,13 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 100
             )
         )
+        route_name.text = route.name
+        route_distance.text = route.distanceText
+        route_time.text = route.timeText
+        loadImages()
         mMap.setOnMarkerClickListener(this)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        mMap.setPadding(0, 0, 0, 300)
     }
 
     private fun loadImages() {
@@ -592,14 +597,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 Intent.createChooser(intent, "Wybierz zdjęcie"),
                 REQUEST_PICK_IMAGE
             )
-        }
-        nestedScrollView.setOnTouchListener { v, event ->
-            imageSlider.parent.parent.parent.parent.requestDisallowInterceptTouchEvent(false)
-            false
-        }
-        imageSlider.setOnTouchListener { v, event ->
-            nestedScrollView.requestDisallowInterceptTouchEvent(true)
-            false
         }
     }
 
