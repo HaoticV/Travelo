@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,10 +31,11 @@ import com.jaeger.library.StatusBarUtil
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kotlinx.android.synthetic.main.activity_profile_toolbar_collapse.*
+import java.util.*
 
 
 class ProfileActivity : BaseActivity() {
-    private var currentPage = ""
+    private var currentPage = "users"
     private lateinit var mRoutesAdapter: RouteRecyclerViewAdapter
     private lateinit var mFriendsAdapter: FriendsRecyclerViewAdapter
     private lateinit var mToursAdapter: TourRecyclerViewAdapter
@@ -65,6 +67,7 @@ class ProfileActivity : BaseActivity() {
         } else {
             add_friend_button.show()
         }
+        add_friend_button.setOnClickListener { addFriend() }
     }
 
     private fun initToolbar() {
@@ -121,6 +124,55 @@ class ProfileActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_basic, menu)
+        val searchItem: MenuItem = menu?.findItem(R.id.action_search)!!
+        val searchView = searchItem.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                val recyclerView: RecyclerView = findViewById(R.id.profile_routes_recyclerView)
+                recyclerView.layoutManager = LinearLayoutManager(this@ProfileActivity)
+                recyclerView.setHasFixedSize(true)
+
+                val searchListener = object : ValueEventListener {
+                    override fun onCancelled(p0: DatabaseError) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        when (currentPage) {
+                            "routes" -> {
+                                val searchCollection = arrayListOf<Any>()
+                                dataSnapshot.children.forEach {
+                                    val item = it.getValue(Route::class.java)
+                                    if (item?.name?.contains(query!!, true)!!)
+                                        searchCollection.add(item)
+                                    mRoutesAdapter = RouteRecyclerViewAdapter(this@ProfileActivity, searchCollection)
+                                    recyclerView.adapter = mRoutesAdapter
+                                    setUpRoutesOnClickListener()
+                                }
+                            }
+                            "users" -> {
+                                val searchCollection = arrayListOf<User>()
+                                dataSnapshot.children.forEach {
+                                    val item = it.getValue(User::class.java)
+                                    if (item?.displayName?.contains(query!!, true)!!)
+                                        searchCollection.add(item)
+                                    mFriendsAdapter = FriendsRecyclerViewAdapter(this@ProfileActivity, searchCollection)
+                                    recyclerView.adapter = mFriendsAdapter
+                                    setUpFriendsOnClickListener()
+                                }
+                            }
+                        }
+                    }
+                }
+                QApp.fData.reference.child(currentPage).addListenerForSingleValueEvent(searchListener)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return true
+            }
+
+        })
         return true
     }
 
@@ -213,6 +265,27 @@ class ProfileActivity : BaseActivity() {
                 startActivity(intent)
             }
         })
+    }
+
+    private fun addFriend() {
+        val friendsListener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val friends = (dataSnapshot.value) as? HashMap<*, *>
+                if (friends != null && friends.containsValue(QApp.currentUser?.id)) {
+                    Toast.makeText(this@ProfileActivity, QApp.currentUser?.displayName + " już jest Twoim znajomym", Toast.LENGTH_SHORT).show()
+                } else
+                    QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).child("friends").push().setValue(QApp.currentUser?.id).addOnSuccessListener {
+                        Toast.makeText(this@ProfileActivity, "Dodałeś " + QApp.currentUser?.displayName + " do znajomych", Toast.LENGTH_SHORT).show()
+                    }
+                initRecyclerView()
+            }
+
+        }
+        QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).child("friends").addListenerForSingleValueEvent(friendsListener)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
