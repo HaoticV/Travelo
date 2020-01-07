@@ -11,14 +11,14 @@ import com.bumptech.glide.Glide
 import com.example.travelo.R
 import com.example.travelo.lib.ItemAnimation
 import com.example.travelo.models.User
-import kotlinx.android.synthetic.main.item_people_chat.view.*
+import kotlinx.android.synthetic.main.item_user.view.*
 
 class FriendsRecyclerViewAdapter(val context: Context, private val items: ArrayList<User>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mOnItemClickListener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_people_chat, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
         return RouteRecyclerViewAdapterVH(v)
     }
 

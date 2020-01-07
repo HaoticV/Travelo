@@ -27,6 +27,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
@@ -636,6 +638,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         ratingBar_layout.setOnClickListener {
             showCustomDialog()
         }
+        val recyclerView: RecyclerView = findViewById(R.id.comments_recyclerView)
+        comments_recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.setHasFixedSize(true)
     }
 
     private fun initComments() {
@@ -653,13 +658,16 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                     ratings.add(rating!!)
                 }
                 avgRating = ratings.map { s -> s.rating }.average()
-                var ratingFormated: String = ""
-                var float: Float
+                var ratingFormated: String
                 if (ratings.size != 0) {
                     ratingFormated = String.format("%.2f", avgRating)
                     avg_rating.text = ratingFormated
                     ratingBar.rating = avgRating.toFloat()
                     number_of_ratings.text = "(" + ratings.size.toString() + ")"
+                    val recyclerView: RecyclerView = findViewById(R.id.comments_recyclerView)
+                    val comments = ratings.filter { it.text != "" }
+                    recyclerView.adapter = CommentsRecyclerViewAdapter(this@MapsActivity, comments as ArrayList<Rating>)
+                    recyclerView.adapter?.notifyDataSetChanged()
                 }
             }
         }
