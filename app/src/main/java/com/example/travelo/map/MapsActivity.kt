@@ -3,6 +3,7 @@ package com.example.travelo.map
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -20,6 +21,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -36,6 +38,7 @@ import com.example.travelo.database.DatabaseUtils
 import com.example.travelo.directionHelpers.FetchURL
 import com.example.travelo.directionHelpers.TaskLoadedCallback
 import com.example.travelo.lib.ViewAnimation
+import com.example.travelo.models.Rating
 import com.example.travelo.models.Route
 import com.example.travelo.models.User
 import com.example.travelo.profile.ProfileActivity
@@ -56,6 +59,7 @@ import com.smarteist.autoimageslider.IndicatorAnimations
 import com.smarteist.autoimageslider.SliderAnimations
 import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.add_photo_buttons.*
+import kotlinx.android.synthetic.main.dialog_add_rating.*
 import kotlinx.android.synthetic.main.navigation_drawer.view.*
 import kotlinx.android.synthetic.main.sheet_map.*
 
@@ -573,6 +577,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).child("likedRoutes").addValueEventListener(likedRoutesListener)
 
         loadImages()
+        initComments()
         route_name.text = route.name
         route_distance.text = route.distanceText
         route_time.text = route.timeText
@@ -628,6 +633,37 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 REQUEST_PICK_IMAGE
             )
         }
+        ratingBar_layout.setOnClickListener {
+            showCustomDialog()
+        }
+    }
+
+    private fun initComments() {
+        val ratings = arrayListOf<Rating>()
+        val ratingListener = object : ValueEventListener {
+            var avgRating: Double = 3.78
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            @SuppressLint("SetTextI18n")
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                dataSnapshot.children.forEach {
+                    val rating = it.getValue(Rating::class.java)
+                    ratings.add(rating!!)
+                }
+                avgRating = ratings.map { s -> s.rating }.average()
+                var ratingFormated: String = ""
+                var float: Float
+                if (ratings.size != 0) {
+                    ratingFormated = String.format("%.2f", avgRating)
+                    avg_rating.text = ratingFormated
+                    ratingBar.rating = avgRating.toFloat()
+                    number_of_ratings.text = "(" + ratings.size.toString() + ")"
+                }
+            }
+        }
+        QApp.fData.reference.child("routes").child(markerId).child("ratings").addListenerForSingleValueEvent(ratingListener)
     }
 
     private fun likeRoute(likedRoutesKeys: ArrayList<String>, likedRoutesValues: ArrayList<String>) {
@@ -640,6 +676,22 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).child("likedRoutes").push().setValue(markerId)
             imageLike.setImageResource(R.drawable.ic_heart_red)
         }
+    }
+
+    private fun showCustomDialog() {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_rating)
+        dialog.setCancelable(true)
+        Glide.with(this).load(QApp.currentUser?.image).into(dialog.dialog_profile_image)
+        dialog.username.text = QApp.currentUser?.displayName
+        val bt_submit: AppCompatButton = dialog.findViewById<View>(R.id.bt_submit) as AppCompatButton
+        bt_submit.setOnClickListener {
+            QApp.fData.reference.child("routes").child(markerId).child("ratings").push()
+                .setValue(Rating(QApp.currentUser?.id!!, dialog.et_post.text.toString(), dialog.dialog_ratingBar.rating.toDouble(), QApp.currentUser?.displayName!!, QApp.currentUser?.image!!))
+            dialog.dismiss()
+            initComments()
+        }
+        dialog.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
