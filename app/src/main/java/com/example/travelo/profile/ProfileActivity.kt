@@ -20,6 +20,7 @@ import com.example.travelo.BaseActivity
 import com.example.travelo.QApp
 import com.example.travelo.R
 import com.example.travelo.database.DatabaseUtils
+import com.example.travelo.map.AddRouteActivity
 import com.example.travelo.map.MapsActivity
 import com.example.travelo.models.Route
 import com.example.travelo.models.Tour
@@ -47,6 +48,7 @@ class ProfileActivity : BaseActivity() {
         setContentView(R.layout.activity_profile_toolbar_collapse)
         StatusBarUtil.setTransparent(this)
         initToolbar()
+        updateUserUI()
         profile_collapsing_routes_fab.setOnClickListener {
             currentPage = "routes"
             initRecyclerView()
@@ -68,6 +70,7 @@ class ProfileActivity : BaseActivity() {
             add_friend_button.show()
         }
         add_friend_button.setOnClickListener { addFriend() }
+        fab_add_route.setOnClickListener { onAddRouteClicked() }
     }
 
     private fun initToolbar() {
@@ -75,8 +78,10 @@ class ProfileActivity : BaseActivity() {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener { onBackPressed() }
+    }
+
+    private fun updateUserUI() {
         collapsing_toolbar.title = QApp.currentUser?.displayName
         Glide.with(this).load(QApp.currentUser?.image).into(circle_image_view)
     }
@@ -123,7 +128,7 @@ class ProfileActivity : BaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_basic, menu)
+        menuInflater.inflate(R.menu.menu_search, menu)
         val searchItem: MenuItem = menu?.findItem(R.id.action_search)!!
         val searchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -286,6 +291,10 @@ class ProfileActivity : BaseActivity() {
 
         }
         QApp.fData.reference.child("users").child(QApp.fAuth.currentUser?.uid!!).child("friends").addListenerForSingleValueEvent(friendsListener)
+    }
+
+    private fun onAddRouteClicked() {
+        startActivity(Intent(this, AddRouteActivity::class.java))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

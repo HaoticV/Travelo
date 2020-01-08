@@ -50,6 +50,11 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.RectangularBounds
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -73,6 +78,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
     private val REQUEST_IMAGE_CAPTURE = 1
     private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
     private val REQUEST_PICK_IMAGE = 2
+    private val AUTOCOMPLETE_REQUEST_CODE = 3
 
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: MapView
@@ -433,6 +439,15 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             QApp.currentUser = null
             startActivity(Intent(this, SignInActivity::class.java))
         }
+        if (item.itemId == R.id.action_search) {
+            val fields = listOf(Place.Field.ID, Place.Field.NAME)
+            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                .setLocationBias(RectangularBounds.newInstance(LatLngBounds(LatLng(51.066020, 22.340719), LatLng(51.355511, 22.742954))))
+                .setCountry("PL")
+                .build(this)
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+
+        }
         return super.onOptionsItemSelected(item)
     }
 
@@ -737,6 +752,18 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                     .addOnSuccessListener {
                         addPhotoProcess(it)
                     }
+            }
+        }
+        if (requestCode == 3) {
+            if (resultCode == RESULT_OK) {
+                val place = Autocomplete.getPlaceFromIntent(data!!)
+                Toast.makeText(this, "Place: " + place.name + ", " + place.id, Toast.LENGTH_SHORT).show()
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                val status = Autocomplete.getStatusFromIntent(data!!)
+                Log.i("Status", status.statusMessage)
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
             }
         }
     }

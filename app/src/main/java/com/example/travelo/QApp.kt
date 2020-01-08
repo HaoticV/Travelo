@@ -4,9 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import com.example.travelo.models.User
+import com.google.android.libraries.places.api.Places
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+
 
 class QApp : Application() {
 
@@ -19,6 +21,8 @@ class QApp : Application() {
         fData = FirebaseDatabase.getInstance()
         fAuth = FirebaseAuth.getInstance()
         fStorage = FirebaseStorage.getInstance()
+        Places.initialize(applicationContext, res.getString(R.string.google_maps_key))
+        val placesClient = Places.createClient(this)
     }
 
     companion object {
