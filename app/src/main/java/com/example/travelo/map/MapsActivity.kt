@@ -216,7 +216,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 )
             }
         }
-        QApp.fData.reference.addValueEventListener(postListener)
+        QApp.fData.reference.addListenerForSingleValueEvent(postListener)
         mMap.setOnMarkerClickListener(this)
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsLublin, width, height, padding))
         mMap.setOnMapClickListener {
