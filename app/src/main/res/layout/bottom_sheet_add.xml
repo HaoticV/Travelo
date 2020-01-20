@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="@dimen/spacing_medium"
-                android:text="Dandelion Chocolate"
+                android:text="Twoja trasa"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
             <LinearLayout
@@ -110,7 +110,7 @@
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/comments_recyclerView"
+                    android:id="@+id/points_recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scrollbars="vertical"
@@ -166,15 +166,15 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginRight="@dimen/spacing_xmedium"
-                            android:text="Polub trasę"
+                            android:text="Zapisz trasę"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                             android:textColor="@color/grey_90" />
 
                         <ImageView
-                            android:id="@+id/imageLike"
+                            android:id="@+id/imageSave"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            app:srcCompat="@drawable/ic_heart_white" />
+                            app:srcCompat="@drawable/save_route_icon" />
 
 
                     </LinearLayout>

@@ -1,13 +1,17 @@
-package com.example.travelo.map
+package com.example.travelo.add
 
+import android.app.Dialog
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.travelo.BaseActivity
 import com.example.travelo.QApp
 import com.example.travelo.R
@@ -40,6 +44,7 @@ class AddRouteActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMapLong
     private lateinit var mapView: MapView
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private lateinit var recyclerView: RecyclerView
     private lateinit var currentPolyline: Polyline
     private val routePoints = arrayListOf<Place>()
     private val markers = arrayListOf<Marker>()
@@ -59,6 +64,24 @@ class AddRouteActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMapLong
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         initToolbar()
         initBottomSheet()
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
+        recyclerView = findViewById(R.id.points_recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.setHasFixedSize(true)
+        val adapter = AddRoutePointsAdapter(this, routePoints)
+        recyclerView.adapter = adapter
+        adapter.setOnItemClickListener(object : AddRoutePointsAdapter.OnItemClickListener {
+            override fun onItemClick(view: View?, obj: Place?, position: Int) {
+                routePoints.removeAt(position)
+                markers[position].remove()
+                markers.removeAt(position)
+                (recyclerView.adapter as AddRoutePointsAdapter).notifyDataSetChanged()
+                drawRoute()
+            }
+        })
     }
 
     private fun initToolbar() {
@@ -73,18 +96,6 @@ class AddRouteActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMapLong
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_basic, menu)
         return true
-    }
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-        mMap.isMyLocationEnabled = true
-        mMap.uiSettings.isZoomControlsEnabled = true
-        mMap.uiSettings.isMapToolbarEnabled = true
-        mMap.setOnMapLongClickListener(this)
-
-        mFusedLocationClient.lastLocation.addOnSuccessListener {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 12.0f))
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -104,6 +115,94 @@ class AddRouteActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMapLong
         return super.onOptionsItemSelected(item)
     }
 
+    private fun initBottomSheet() { // get the bottom sheet view
+        bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_add)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehavior.setBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(p0: View, p1: Float) {
+
+            }
+
+            override fun onStateChanged(p0: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> bottomSheetBehavior.state =
+                        BottomSheetBehavior.STATE_HIDDEN
+                    BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state =
+                        BottomSheetBehavior.STATE_COLLAPSED
+                    BottomSheetBehavior.STATE_DRAGGING -> bottomSheetBehavior.state =
+                        BottomSheetBehavior.STATE_DRAGGING
+                    BottomSheetBehavior.STATE_SETTLING -> bottomSheetBehavior.state =
+                        BottomSheetBehavior.STATE_SETTLING
+                    BottomSheetBehavior.STATE_EXPANDED -> bottomSheetBehavior.state =
+                        BottomSheetBehavior.STATE_EXPANDED
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> bottomSheetBehavior.state =
+                        BottomSheetBehavior.STATE_HALF_EXPANDED
+                }
+            }
+        })
+        imageSave.setOnClickListener { saveRoute() }
+    }
+
+    private fun saveRoute() {
+        if (routePoints.size >= 2) {
+            val dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE) // before
+
+            dialog.setContentView(R.layout.dialog_add_review)
+            dialog.setCancelable(true)
+
+            val lp = WindowManager.LayoutParams()
+            lp.copyFrom(dialog.window!!.attributes)
+            lp.width = WindowManager.LayoutParams.WRAP_CONTENT
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+
+            val et_post = dialog.findViewById<View>(R.id.et_post) as EditText
+            (dialog.findViewById<View>(R.id.bt_cancel) as AppCompatButton).setOnClickListener { dialog.dismiss() }
+
+            (dialog.findViewById<View>(R.id.bt_submit) as AppCompatButton).setOnClickListener {
+                val name = et_post.text.toString().trim { it <= ' ' }
+                if (name.isEmpty()) {
+                    Toast.makeText(applicationContext, "Podaj nazwę", Toast.LENGTH_SHORT).show()
+                } else {
+                    dialog.dismiss()
+                    Toast.makeText(applicationContext, "Dodałeś trasę: $name", Toast.LENGTH_SHORT).show()
+                    addRouteToDatabase(name)
+                }
+            }
+            dialog.show()
+            dialog.window!!.attributes = lp
+        } else Toast.makeText(applicationContext, "Trasa musi posiadać początek i koniec", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun addRouteToDatabase(name: String) {
+        val key = QApp.fData.reference.child("routes").push().key!!
+        var wayPoints = routePoints.drop(0)
+        wayPoints = wayPoints.dropLast(1)
+        QApp.fData.reference.child("routes").setValue(
+            Route(
+                id = key,
+                name = name,
+                origin = LatLang(routePoints[0].latLng?.latitude!!, routePoints[0].latLng?.latitude!!),
+                waypoints = wayPoints.map { place -> LatLang(place.latLng?.latitude!!, routePoints[0].latLng?.latitude!!) },
+                destination = LatLang(routePoints.last().latLng?.latitude!!, routePoints.last().latLng?.longitude!!),
+                type = "city"
+            )
+        )
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        mMap.isMyLocationEnabled = true
+        mMap.uiSettings.isZoomControlsEnabled = true
+        mMap.uiSettings.isMapToolbarEnabled = true
+        mMap.setOnMapLongClickListener(this)
+
+        mFusedLocationClient.lastLocation.addOnSuccessListener {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 12.0f))
+        }
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         var mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY)
@@ -115,6 +214,7 @@ class AddRouteActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMapLong
     }
 
     override fun onMapLongClick(coordinates: LatLng?) {
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         val getAddress = Geocoder(this, Locale("PL"))
         val address = getAddress.getFromLocation(coordinates?.latitude!!, coordinates.longitude, 1)[0].getAddressLine(0)
         addPointToRoute(Place.builder().setLatLng(coordinates).setName(address).build())
@@ -138,8 +238,10 @@ class AddRouteActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMapLong
     private fun addPointToRoute(place: Place) {
         markers.add(mMap.addMarker(MarkerOptions().position(place.latLng!!).title(place.name)))
         routePoints.add(place)
+        recyclerView.adapter?.notifyDataSetChanged()
         animateCamera()
     }
+
 
     private fun animateCamera() {
         when (routePoints.size) {
@@ -149,9 +251,11 @@ class AddRouteActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMapLong
     }
 
     private fun drawRoute() {
-        FetchURL(this).execute(getUrl(parsePointsIntoRoute()))
+        if (routePoints.isNotEmpty()) {
+            val url = getUrl(parsePointsIntoRoute())
+            FetchURL(this).execute(url)
+        }
     }
-
 
     private fun parsePointsIntoRoute(): Route {
         val firstAndLast = listOf(routePoints[0], routePoints[routePoints.lastIndex])
@@ -187,32 +291,13 @@ class AddRouteActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMapLong
         return final
     }
 
-    private fun initBottomSheet() { // get the bottom sheet view
-        bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_add)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        bottomSheetBehavior.setBottomSheetCallback(object :
-            BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(p0: View, p1: Float) {
-
-            }
-
-            override fun onStateChanged(p0: View, newState: Int) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> bottomSheetBehavior.state =
-                        BottomSheetBehavior.STATE_HIDDEN
-                    BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state =
-                        BottomSheetBehavior.STATE_COLLAPSED
-                    BottomSheetBehavior.STATE_DRAGGING -> bottomSheetBehavior.state =
-                        BottomSheetBehavior.STATE_DRAGGING
-                    BottomSheetBehavior.STATE_SETTLING -> bottomSheetBehavior.state =
-                        BottomSheetBehavior.STATE_SETTLING
-                    BottomSheetBehavior.STATE_EXPANDED -> bottomSheetBehavior.state =
-                        BottomSheetBehavior.STATE_EXPANDED
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> bottomSheetBehavior.state =
-                        BottomSheetBehavior.STATE_HALF_EXPANDED
-                }
-            }
-        })
+    override fun onTaskDone(polylineOptions: PolylineOptions?) {
+        currentPolyline = if (::currentPolyline.isInitialized) {
+            currentPolyline.remove()
+            mMap.addPolyline(polylineOptions)
+        } else {
+            mMap.addPolyline(polylineOptions)
+        }
     }
 
     override fun onResume() {
@@ -243,14 +328,5 @@ class AddRouteActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMapLong
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
-    }
-
-    override fun onTaskDone(polylineOptions: PolylineOptions?) {
-        currentPolyline = if (::currentPolyline.isInitialized) {
-            currentPolyline.remove()
-            mMap.addPolyline(polylineOptions)
-        } else {
-            mMap.addPolyline(polylineOptions)
-        }
     }
 }

@@ -177,7 +177,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         val padding = (width * 0.12).toInt()
 
         val hashMap: HashMap<String, Pair<String, LatLng>> = HashMap()
-        val postListener = object : ValueEventListener {
+        val markerListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (data: DataSnapshot in dataSnapshot.children.filter { it.key == "routes" }.flatMap { it.children }) {
                     hashMap[data.key.toString()] = Pair(
@@ -211,12 +211,12 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.w(
                     this@MapsActivity.toString(),
-                    "loadPost:onCancelled",
+                    "loadMarkers:onCancelled",
                     databaseError.toException()
                 )
             }
         }
-        QApp.fData.reference.addListenerForSingleValueEvent(postListener)
+        QApp.fData.reference.addListenerForSingleValueEvent(markerListener)
         mMap.setOnMarkerClickListener(this)
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsLublin, width, height, padding))
         mMap.setOnMapClickListener {
@@ -504,8 +504,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                 }
                 val filteredListDistance: MutableList<DataSnapshot> = arrayListOf()
                 filteredListDistance.addAll(filteredListType.filter {
-                    it.child("distance").value.toString().toInt() / 1000 > header.seekbar_search_route_length.selectedMinValue.toInt()
-                            && it.child("distance").value.toString().toInt() / 1000 < header.seekbar_search_route_length.selectedMaxValue.toInt()
+                    it.child("distance").value.toString().toInt() > header.seekbar_search_route_length.selectedMinValue.toInt() * 1000
+                            && it.child("distance").value.toString().toInt() < header.seekbar_search_route_length.selectedMaxValue.toInt() * 1000
                 })
                 val filteredListRadius: MutableList<DataSnapshot> = arrayListOf()
                 for (item in filteredListDistance) {
@@ -519,7 +519,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                     val currentLocation = Location("currentLocation")
                     currentLocation.latitude = mLocation.latitude
                     currentLocation.longitude = mLocation.longitude
-                    if (pointLocation.distanceTo(currentLocation) / 1000 < header.seekbar_search_radius.selectedMinValue.toInt()) {
+                    if (pointLocation.distanceTo(currentLocation) < header.seekbar_search_radius.selectedMinValue.toInt() * 1000) {
                         filteredListRadius.add(item)
                     }
                 }

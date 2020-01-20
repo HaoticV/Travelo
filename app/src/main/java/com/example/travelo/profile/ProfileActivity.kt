@@ -19,8 +19,8 @@ import com.bumptech.glide.Glide
 import com.example.travelo.BaseActivity
 import com.example.travelo.QApp
 import com.example.travelo.R
+import com.example.travelo.add.AddRouteActivity
 import com.example.travelo.database.DatabaseUtils
-import com.example.travelo.map.AddRouteActivity
 import com.example.travelo.map.MapsActivity
 import com.example.travelo.models.Route
 import com.example.travelo.models.Tour
