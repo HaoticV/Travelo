@@ -66,9 +66,9 @@ import com.smarteist.autoimageslider.IndicatorAnimations
 import com.smarteist.autoimageslider.SliderAnimations
 import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.add_photo_buttons.*
+import kotlinx.android.synthetic.main.bottom_sheet_map.*
 import kotlinx.android.synthetic.main.dialog_add_rating.*
 import kotlinx.android.synthetic.main.navigation_drawer.view.*
-import kotlinx.android.synthetic.main.sheet_map.*
 
 
 class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
@@ -663,9 +663,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         val ratingListener = object : ValueEventListener {
             var avgRating: Double = 3.78
             override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
 
+            }
             @SuppressLint("SetTextI18n")
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 dataSnapshot.children.forEach {
@@ -673,12 +672,12 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                     ratings.add(rating!!)
                 }
                 avgRating = ratings.map { s -> s.rating }.average()
-                var ratingFormated: String
+                val ratingFormated: String
                 if (ratings.size != 0) {
                     ratingFormated = String.format("%.2f", avgRating)
                     avg_rating.text = ratingFormated
                     ratingBar.rating = avgRating.toFloat()
-                    number_of_ratings.text = "(" + ratings.size.toString() + ")"
+                    number_of_ratings.text = "(" + ratings.size + ")"
                     val recyclerView: RecyclerView = findViewById(R.id.comments_recyclerView)
                     val comments = ratings.filter { it.text != "" }
                     recyclerView.adapter = CommentsRecyclerViewAdapter(this@MapsActivity, comments as ArrayList<Rating>)
@@ -754,7 +753,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                     }
             }
         }
-        if (requestCode == 3) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 val place = Autocomplete.getPlaceFromIntent(data!!)
                 Toast.makeText(this, "Place: " + place.name + ", " + place.id, Toast.LENGTH_SHORT).show()
@@ -778,7 +777,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
                     fab_add.show()
                 }
         }
-
     }
 
     //endregion
@@ -799,11 +797,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClick
         // Output format
         val output = "json"
         // Building the url to the web service
-        val final =
-            "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(
-                R.string.google_maps_key
-            )
-        return final
+        return "https://maps.googleapis.com/maps/api/directions/$output?$parameters&key=" + getString(
+            R.string.google_maps_key
+        )
     }
 
     //region lifecycle

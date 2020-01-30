@@ -222,7 +222,7 @@ class AddRouteActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMapLong
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 3) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 val place = Autocomplete.getPlaceFromIntent(data!!)
                 addPointToRoute(place)

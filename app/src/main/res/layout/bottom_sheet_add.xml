@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/spacing_medium"
-                    android:text="21 km "
+                    android:text="36 km "
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/grey_90" />
 
@@ -77,7 +77,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/spacing_medium"
                     android:gravity="center_vertical|start"
-                    android:text="2h 21min "
+                    android:text="1h 48 min "
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/grey_90" />
 

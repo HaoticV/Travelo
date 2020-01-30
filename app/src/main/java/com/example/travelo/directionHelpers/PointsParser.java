@@ -55,6 +55,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
     }
 
     // Executes in UI thread, after the parsing process
+    @SuppressWarnings("ConstantConditions")
     @Override
     protected void onPostExecute(List<List<HashMap<String, String>>> result) {
         ArrayList<LatLng> points;

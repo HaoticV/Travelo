@@ -138,23 +138,9 @@ class ProfileActivity : BaseActivity() {
                 recyclerView.setHasFixedSize(true)
 
                 val searchListener = object : ValueEventListener {
-                    override fun onCancelled(p0: DatabaseError) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
 
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         when (currentPage) {
-                            "routes" -> {
-                                val searchCollection = arrayListOf<Any>()
-                                dataSnapshot.children.forEach {
-                                    val item = it.getValue(Route::class.java)
-                                    if (item?.name?.contains(query!!, true)!!)
-                                        searchCollection.add(item)
-                                    mRoutesAdapter = RouteRecyclerViewAdapter(this@ProfileActivity, searchCollection)
-                                    recyclerView.adapter = mRoutesAdapter
-                                    setUpRoutesOnClickListener()
-                                }
-                            }
                             "users" -> {
                                 val searchCollection = arrayListOf<User>()
                                 dataSnapshot.children.forEach {
@@ -166,7 +152,22 @@ class ProfileActivity : BaseActivity() {
                                     setUpFriendsOnClickListener()
                                 }
                             }
+                            "routes" -> {
+                                val searchCollection = arrayListOf<Any>()
+                                dataSnapshot.children.forEach {
+                                    val item = it.getValue(Route::class.java)
+                                    if (item?.name?.contains(query!!, true)!!)
+                                        searchCollection.add(item)
+                                    mRoutesAdapter = RouteRecyclerViewAdapter(this@ProfileActivity, searchCollection)
+                                    recyclerView.adapter = mRoutesAdapter
+                                    setUpRoutesOnClickListener()
+                                }
+                            }
                         }
+                    }
+
+                    override fun onCancelled(p0: DatabaseError) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                     }
                 }
                 QApp.fData.reference.child(currentPage).addListenerForSingleValueEvent(searchListener)
